@@ -33,13 +33,13 @@ It unifies over **40 different data sources**—from NASA, USGS, NOAA, and ESA�
 
 ---
 
-## 🚀 Why GeoFetch?
+## 🌎 Why GeoFetch?
 
 Fetching elevation, bathymetry, or oceanographic data usually involves navigating dozens of different APIs, FTP sites, and web portals. GeoFetch solves this by providing:
 
-* **Unified CLI:** One syntax to rule them all. No more memorizing `curl` flags or API endpoints.
-* **Smart Indexing (FRED):** Our local spatial index (FRED) lets you query file-based repositories (like NCEI or Copernicus) instantly without hammering remote servers.
-* **Resumable Downloads:** Built-in connection pooling and byte-range support ensure large downloads survive flaky internet connections.
+* One syntax to rule them all. No more memorizing `curl` flags or API endpoints.
+* Our local spatial index (FRED) lets you query file-based repositories (like NCEI or Copernicus) instantly without hammering remote servers.
+* Built-in connection pooling and byte-range support ensure large downloads survive flaky internet connections.
 
 ---
 
@@ -51,6 +51,7 @@ GeoFetch is a standard Python package. You can install it directly from the sour
 git clone [https://github.com/ciresdem/geofetch.git](https://github.com/ciresdem/geofetch.git)
 cd geofetch
 pip install .
+```
 
 ## 💻 Usage
 
@@ -80,27 +81,29 @@ geofetch --modules
 
 # View detailed metadata for a specific module
 geofetch --info gmrt
+
+# Search for all USGS data
+geofetch --search usgs
 ```
 
 ## 🗺️ Supported Data
 
 We support a growing federation of data sources:
 
-Category,Modules
-Topography,"srtm_plus, copernicus, nasadem, tnm (USGS 3DEP), arcticdem"
-Bathymetry,"gmrt, emodnet, gebco, multibeam, nos_hydro, blue_topo"
-Oceanography,"tides, buoys, mur_sst, swot"
-Reference,"osm (OpenStreetMap), vdatum, checkpoints"
-
-CategoryModulesTopographysrtm_plus, copernicus, nasadem, tnm (USGS 3DEP), arcticdemBathymetrygmrt, emodnet, gebco, multibeam, nos_hydro, blue_topoOceanographytides, buoys, mur_sst, swotReferenceosm (OpenStreetMap), vdatum, checkpoints
+| Category | Example Modules |
+|----|----|
+| Topography | srtm_plus, copernicus, nasadem, tnm (USGS), arcticdem |
+| Bathymetry | gmrt, emodnet, gebco, multibeam, nos_hydro |
+| Oceanography |tides, buoys, mur_sst |
+| Reference | osm (OpenStreetMap), vdatumGenerichttp (Direct URL), earthdata (NASA) |
 
 ## 🤝 Contribute new GeoFetch Modules!
 
 The power of GeoFetch lies in its registry. The more modules we have, the more powerful the tool becomes for the entire geospatial community.
 
-** Do you have a favorite public dataset? ** Don't keep the script to yourself—turn it into a GeoFetch module!
+**Do you have a favorite public dataset?** Don't keep the script to yourself—turn it into a GeoFetch module!
 
-** How to Contribute **
+### How to Contribute
 
 Adding a module is easy:
 
