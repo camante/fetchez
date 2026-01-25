@@ -266,3 +266,9 @@ def region_to_shapely(region: Tuple[float, float, float, float]):
         
     west, east, south, north = region
     return box(west, south, east, north)
+
+def region_to_wkt(region: Tuple[float, float, float, float]):
+    """Convert a GeoFetch region (xmin, xmax, ymin, ymax) to WKT"""
+
+    polygon = region_to_shapely(region)
+    return polygon.wkt

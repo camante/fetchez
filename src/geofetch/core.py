@@ -336,7 +336,16 @@ class Fetch:
         self.silent = logger.getEffectiveLevel() > logging.INFO
         
         
-    def fetch_req(self, params=None, json=None, tries=5, timeout=None, read_timeout=None) -> Optional[requests.Response]:
+    def fetch_req(
+            self,
+            method: str = 'GET',
+            params: Optional[Dict] = None, 
+            data: Optional[Any] = None,
+            json: Optional[Dict] = None, 
+            tries: int = 5, 
+            timeout: Optional[Union[float, Tuple]] = None, 
+            read_timeout: Optional[float] = None
+    ) -> Optional[requests.Response]:
         """Fetch src_url and return the requests object (iterative retry)."""
         
         req = None
@@ -346,21 +355,35 @@ class Fetch:
         for attempt in range(tries):
             try:
                 ## Calculate timeouts for this attempt
-                to_tuple = (
+                tupled_timeout = (
                     current_timeout if current_timeout else None,
                     current_read_timeout if current_read_timeout else None
                 )
 
-                req = requests.get(
-                    self.url,
-                    stream=True,
+                req = requests.request(
+                    method=method,
+                    url=self.url,
                     params=params,
+                    data=data,
                     json=json,
-                    timeout=to_tuple,
+                    headers=self.headers,
+                    #auth=self.auth,
+                    timeout=tupled_timeout,
                     verify=self.verify,
                     allow_redirects=self.allow_redirects,
-                    headers=self.headers
+                    stream=True  # Always stream to support large files
                 )
+                
+                # req = requests.get(
+                #     self.url,
+                #     stream=True,
+                #     params=params,
+                #     json=json,
+                #     timeout=to_tuple,
+                #     verify=self.verify,
+                #     allow_redirects=self.allow_redirects,
+                #     headers=self.headers
+                # )
                 
                 ## Check status codes
                 if req.status_code == 504: # Gateway Timeout

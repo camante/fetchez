@@ -244,7 +244,7 @@ class GeoFetchRegistry:
             'tags': ['bathymetry', 'crowd-sourced', 'citizen-science', 'csv', 'depth', 'noaa'],
             'region': 'Global',
             'resolution': 'Varies',
-            'license': 'Public Domain',
+            'license': 'CC0 / Public Domain',
             'urls': {'home': 'https://www.ngdc.noaa.gov/iho/'}
         },
         
