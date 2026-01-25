@@ -42,7 +42,6 @@ Originally part of the [CUDEM](https://github.com/ciresdem/cudem) project, GeoFe
 git clone [https://github.com/ciresdem/geofetch.git](https://github.com/ciresdem/geofetch.git)
 cd geofetch
 pip install .
-Development Mode:Bashpip install -e .
 ```
 
 ## 💻 CLI Usage
