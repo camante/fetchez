@@ -39,7 +39,7 @@ Originally part of the [CUDEM](https://github.com/ciresdem/cudem) project, GeoFe
 **From Source:**
 
 ```bash
-git clone [https://github.com/ciresdem/geofetch.git](https://github.com/ciresdem/geofetch.git)
+git clone https://github.com/ciresdem/geofetch.git
 cd geofetch
 pip install .
 ```
