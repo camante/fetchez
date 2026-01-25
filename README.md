@@ -46,8 +46,15 @@ pip install .
 
 ## 💻 CLI Usage
 
-The primary command is geofetch (or gfetch).Basic SyntaxBashgeofetch -R <region> <module> [options]
-Examples
+The primary command is geofetch (or gfetch).
+
+### Basic Syntax
+
+```bash
+geofetch -R <region> <module> [options]
+```
+
+### Examples
 
 1. Fetch SRTM+ Data for a Bounding BoxBash# Region Format: West/East/South/North
 ```geofetch -R -105.5/-104.5/39.5/40.5 srtm_plus```
