@@ -11,9 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Decoupled from CUDEM project.
 - New `geofetch.spatial` module for lightweight region parsing.
 - New `geofetch.registry` for lazy module loading.
-- Modernized CLI with `rich` logging support.
+- Modernized CLI with logging support.
 - FRED index now uses GeoJSON and Shapely directly (removed OGR dependency).
 
 ### Changed
 - Renamed project from `fetches` to `geofetch`.
-- Refactored all modules to inherit from `geofetch.core.FetchModule`.
+- Refactored some old cudem.fetches modules to inherit from `geofetch.core.FetchModule`.
