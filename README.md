@@ -45,7 +45,9 @@ pip install .
 Development Mode:Bashpip install -e .
 ```
 
-💻 CLI UsageThe primary command is geofetch (or gfetch).Basic SyntaxBashgeofetch -R <region> <module> [options]
+## 💻 CLI Usage
+
+The primary command is geofetch (or gfetch).Basic SyntaxBashgeofetch -R <region> <module> [options]
 Examples
 
 1. Fetch SRTM+ Data for a Bounding BoxBash# Region Format: West/East/South/North
@@ -58,7 +60,22 @@ Examples
 ```geofetch -R loc:"Boulder, CO" copernicus --datatype=1```
 
 4. List Available ModulesBashgeofetch --modules
-Common Flags-R, --region: Set the area of interest (Bounding Box, Place Name, or File).-l, --list: Print the URLs found but do not download them.-H, --threads: Number of parallel download threads (default: 1).--info: Display metadata (Agency, License, Resolution) for a module.🐍 Python APIGeoFetch is designed to be easily integrated into Python workflows.Simple FetchingPythonimport geofetch
+
+Common Flags
+
+-R, --region: Set the area of interest (Bounding Box, Place Name, or File).
+-l, --list: Print the URLs found but do not download them.
+-H, --threads: Number of parallel download threads (default: 1).
+--info: Display metadata (Agency, License, Resolution) for a module.
+
+## 🐍 Python API
+
+GeoFetch is designed to be easily integrated into Python workflows.
+
+Simple Fetching
+
+```python
+import geofetch
 
 # 1. Define a region (West, East, South, North)
 bbox = (-105.5, -104.5, 39.5, 40.5)
@@ -75,7 +92,14 @@ fetcher.run()
 for result in fetcher.results:
     print(f"Downloaded: {result['dst_fn']}")
     print(f"Source URL: {result['url']}")
-Data DiscoveryQuery the registry to find datasets that match your criteria programmatically.Pythonfrom geofetch.registry import GeoFetchRegistry
+```
+
+Data Discovery
+
+Query the registry to find datasets that match your criteria programmatically.
+
+```python
+from geofetch.registry import GeoFetchRegistry
 
 # Search for global bathymetry datasets
 matches = GeoFetchRegistry.search_modules('global bathymetry')
@@ -97,4 +121,23 @@ results = index.search(
 )
 
 print(f"Found {len(results)} datasets.")
-🗺️ Supported Data SourcesGeoFetch supports over 40 modules categorized by data type. Run geofetch --modules to see the full list.CategoryExample ModulesTopographysrtm_plus, copernicus, nasadem, tnm (USGS), arcticdemBathymetrygmrt, emodnet, gebco, multibeam, nos_hydroOceanographytides, buoys, mur_sstReferenceosm (OpenStreetMap), vdatumGenerichttp (Direct URL), earthdata (NASA)🛠️ ContributingWe welcome contributions! Please see CONTRIBUTING.md for details on how to register new modules with our enhanced metadata schema.📄 LicenseThis project is licensed under the MIT License - see the LICENSE file for details.Copyright (c) 2010-2026 Regents of the University of Colorado
+```
+
+## 🗺️ Supported Data Sources
+
+GeoFetch supports over 40 modules categorized by data type. Run ```geofetch --modules``` to see the full list.
+
+| Category | Example Modules |
+|----|----|
+| Topography | srtm_plus, copernicus, nasadem, tnm (USGS), arcticdem |
+| Bathymetry | gmrt, emodnet, gebco, multibeam, nos_hydro |
+| Oceanography |tides, buoys, mur_sst |
+| Reference | osm (OpenStreetMap), vdatumGenerichttp (Direct URL), earthdata (NASA) |
+
+## 🛠️ Contributing
+
+We welcome contributions! Please see CONTRIBUTING.md for details on how to register new modules with our enhanced metadata schema.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.Copyright (c) 2010-2026 Regents of the University of Colorado
