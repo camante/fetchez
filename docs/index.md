@@ -1,0 +1,119 @@
+---
+title: The Generic Geospatial Data Acquisition Engine
+---
+
+<link rel="stylesheet" href="style.css" />
+
+<pre>
+       _..._
+     .'     '.      ___
+    /    .-""-\   .'_  '\
+   |   /'  _   \ / / \   \    [ G E O F E T C H ]
+   |  |   (_)   |  |  \  |
+   \   \     /  \   \ /  /    Data Acquisition Engine
+    \   '.__.'   '.__.' /
+     '.       _..._   .'
+       '-----'     '-'
+</pre>
+
+# GeoFetch
+
+**The Generic Geospatial Data Acquisition Engine**
+
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/ciresdem/geofetch)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/ciresdem/geofetch/blob/main/LICENSE)
+[![Python](https://img.shields.io/badge/python-3.8+-yellow.svg)](https://www.python.org/)
+
+GeoFetch is a lightweight, open-source command-line tool and Python library designed to discover and download geospatial data from a wide variety of public repositories. 
+
+It unifies over **40 different data sources**—from NASA, USGS, NOAA, and ESA—into a single, standard interface.
+
+[View on GitHub](https://github.com/ciresdem/geofetch){: .btn .btn-primary }
+[View Modules](https://github.com/ciresdem/geofetch/tree/main/src/geofetch/modules){: .btn }
+
+---
+
+## 🚀 Why GeoFetch?
+
+Fetching elevation, bathymetry, or oceanographic data usually involves navigating dozens of different APIs, FTP sites, and web portals. GeoFetch solves this by providing:
+
+* **Unified CLI:** One syntax to rule them all. No more memorizing `curl` flags or API endpoints.
+* **Smart Indexing (FRED):** Our local spatial index (FRED) lets you query file-based repositories (like NCEI or Copernicus) instantly without hammering remote servers.
+* **Resumable Downloads:** Built-in connection pooling and byte-range support ensure large downloads survive flaky internet connections.
+
+---
+
+## 📦 Installation
+
+GeoFetch is a standard Python package. You can install it directly from the source:
+
+```bash
+git clone [https://github.com/ciresdem/geofetch.git](https://github.com/ciresdem/geofetch.git)
+cd geofetch
+pip install .
+
+## 💻 Usage
+
+The core philosophy is simple: Define a Region, Pick a Module.
+1. The Basics
+
+Fetch SRTM+ topography for a specific bounding box (West, East, South, North):
+
+``` bash
+geofetch -R -105.5/-104.5/39.5/40.5 srtm_plus
+```
+
+2. Search by Place Name
+
+Don't know the coordinates? Use a place name:
+
+```bash
+geofetch -R loc:"Boulder, CO" copernicus --datatype=1
+```
+
+3. Discover Data
+
+Not sure what dataset you need? Browse the registry:
+```bash
+# List all available modules
+geofetch --modules
+
+# View detailed metadata for a specific module
+geofetch --info gmrt
+```
+
+## 🗺️ Supported Data
+
+We support a growing federation of data sources:
+
+Category,Modules
+Topography,"srtm_plus, copernicus, nasadem, tnm (USGS 3DEP), arcticdem"
+Bathymetry,"gmrt, emodnet, gebco, multibeam, nos_hydro, blue_topo"
+Oceanography,"tides, buoys, mur_sst, swot"
+Reference,"osm (OpenStreetMap), vdatum, checkpoints"
+
+CategoryModulesTopographysrtm_plus, copernicus, nasadem, tnm (USGS 3DEP), arcticdemBathymetrygmrt, emodnet, gebco, multibeam, nos_hydro, blue_topoOceanographytides, buoys, mur_sst, swotReferenceosm (OpenStreetMap), vdatum, checkpoints
+
+## 🤝 Contribute new GeoFetch Modules!
+
+The power of GeoFetch lies in its registry. The more modules we have, the more powerful the tool becomes for the entire geospatial community.
+
+** Do you have a favorite public dataset? ** Don't keep the script to yourself—turn it into a GeoFetch module!
+
+** How to Contribute **
+
+Adding a module is easy:
+
+1. Create a Class: Inherit from geofetch.core.FetchModule.
+
+2. Implement run(): Define how to translate a region into a URLs suitable to download.
+
+3. Register It: Add your metadata (Agency, Resolution, License) to registry.py.
+
+We have a comprehensive guide to help you get started:
+
+Read the Contribution Guide{: .btn .btn-outline }
+
+### License
+
+GeoFetch is open-source software licensed under the MIT License.Copyright (c) 2010-2026 Regents of the University of Colorado.
