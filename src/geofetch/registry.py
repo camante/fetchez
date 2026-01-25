@@ -219,6 +219,20 @@ class GeoFetchRegistry:
             'license': 'Public Domain',
             'urls': {'home': 'https://www.charts.noaa.gov/'}
         },        
+
+        # World Settlement Footprint
+        'wsf': {
+            'mod': 'geofetch.modules.wsf', 
+            'cls': 'WSF', 
+            'category': 'Land Cover',
+            'desc': 'World Settlement Footprint 2019 (10m)',
+            'agency': 'DLR',
+            'tags': ['urban', 'settlement', 'population', 'dlr', 'land-cover'],
+            'region': 'Global',
+            'resolution': '10m',
+            'license': 'CC-BY 4.0',
+            'urls': {'home': 'https://geoservice.dlr.de/web/maps/wsf2019'}
+        },
         
         # Nominatum
         'nominatim': {
