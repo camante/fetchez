@@ -119,4 +119,6 @@ Read the [Contribution Guide](https://github.com/ciresdem/geofetch/blob/main/CON
 
 ### License
 
-GeoFetch is open-source software licensed under the MIT License.Copyright (c) 2010-2026 Regents of the University of Colorado.
+GeoFetch is open-source software licensed under the MIT License.
+
+Copyright (c) 2010-2026 Regents of the University of Colorado.
