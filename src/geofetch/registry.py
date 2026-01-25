@@ -233,6 +233,22 @@ class GeoFetchRegistry:
             'license': 'CC-BY 4.0',
             'urls': {'home': 'https://geoservice.dlr.de/web/maps/wsf2019'}
         },
+
+        # No Region Modules:
+        
+        # Cpt-City
+        'cpt_city': {
+            'mod': 'geofetch.modules.cptcity', 
+            'cls': 'CPTCity', 
+            'category': 'Visualization',
+            'desc': 'Color Palette Tables (CPT) from CPT City',
+            'agency': 'SeaView Sensing / CPT City',
+            'tags': ['visualization', 'color', 'palette', 'cpt', 'cartography'],
+            'region': 'Global',
+            'resolution': 'N/A',
+            'license': 'Varies (Mostly Public/Open)',
+            'urls': {'home': 'http://soliton.vm.bytemark.co.uk/pub/cpt-city/'}
+        },
         
         # Nominatum
         'nominatim': {
