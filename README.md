@@ -56,9 +56,10 @@ geofetch -R <region> <module> [options]
 
 ### Examples
 
- *  Fetch SRTM+ Data for a Bounding BoxBash# Region Format: West/East/South/North
+ *  Fetch SRTM+ Data for a Bounding Box
 
 ```bash
+# Region Format: West/East/South/North
 geofetch -R -105.5/-104.5/39.5/40.5 srtm_plus
 ```
 
