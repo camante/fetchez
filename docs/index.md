@@ -4,7 +4,7 @@ title: The Generic Geospatial Data Acquisition and Registry Engine
 
 <link rel="stylesheet" href="style.css" />
 
-<pre>
+<pre style="background-color: #FFFFFF;">
        _..._
      .'     '.      ___
     /    .-""-\   .'_  '\
