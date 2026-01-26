@@ -19,12 +19,28 @@ logger = logging.getLogger(__name__)
 
 # =============================================================================
 # GeoFetch Registry
+#
+# Each module in the registry should have *AT LEAST* `mod` and `cls` defined
+# correctly for the specific module so geofetch can call it correctly.
+#
+# It is highly encouraged to fill out all the metadata for every geofetch module.
+# In addition to the *MANDATORY* fields mentioned above, we would also like:
+#   `category`, `desc`, `agency`, `tags, `region`, `resolution`, `license` and `urls`
+#
+# This will ensure the registry is robust and useful for everyone.
+#
+# You can also set the optional `aliases` field, to give the module aliases.
+# If a geofetch module has the same metadata as one that already exists, you
+# can set the `inherits` key to that other module to avoid duplicating
+# metadata. (`mod` and `cls` still need to set correctly.
 # =============================================================================
 class GeoFetchRegistry:
     """GeoFetch Module Registry with rich metadata for discovery."""
     
     _modules = {
+        # Generic https module to send an argument to FetchModule.results
         'https': {'mod': 'geofetch.core', 'cls': 'HttpDataset', 'category': 'Generic'},
+        
         # GMRT
         'gmrt': {
             'mod': 'geofetch.modules.gmrt', 
@@ -58,7 +74,8 @@ class GeoFetchRegistry:
                 'docs': 'https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model'
             }
         },
-        # The National Map (TNM) / USGS
+        
+        # The National Map (TNM) / USGS and Shortcuts (ned/3dep/etc)
         'tnm': {
             'mod': 'geofetch.modules.tnm', 
             'cls': 'TheNationalMap', 
@@ -74,7 +91,6 @@ class GeoFetchRegistry:
                 'api': 'https://tnmaccess.nationalmap.gov/api/v1/docs/'
             }
         },
-        # TNM Shortcuts / Other USGS errata
         'ned': {
             'inherits': 'tnm',
             'mod': 'geofetch.modules.tnm', 
@@ -262,7 +278,8 @@ class GeoFetchRegistry:
             'urls': {'home': 'https://www.ndbc.noaa.gov/'}
         },
         
-        # No Region Modules:
+        # The following modules don't need a `region`,
+        # they populate `FetchModule.results` in some other way.
         
         # Cpt-City
         'cpt_city': {
@@ -336,7 +353,7 @@ class GeoFetchRegistry:
     
     @classmethod
     def load_module(cls, mod_key: str):
-        """Dynamically import and return the class."""
+        """Import and return the class using `importlib`."""
         
         info = cls.get_info(mod_key)
         if not info:
@@ -347,7 +364,7 @@ class GeoFetchRegistry:
             mod_cls = getattr(module, info['cls'])
             return mod_cls
         except (ImportError, AttributeError) as e:
-            logger.error(f"Failed to lazy load {mod_key}: {e}")
+            logger.error(f"Failed to load {mod_key}: {e}")
             return None
 
         
