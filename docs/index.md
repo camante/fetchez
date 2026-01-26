@@ -9,7 +9,7 @@ title: The Generic Geospatial Data Acquisition and Registry Engine
      .'     '.      ___
     /    .-""-\   .'_  '\
    |   /'  _   \ / / \   \    
-   |  |   (_)   |  |  \  |  [    G    E   O  F E T C H . .. ]
+   |  |   (_)   |  |  \  |  [ : G E O F E T C H : ]
    \   \     /  \   \ /  /
     \   '.__.'   '.__.' /
      '.       _..._   .'
