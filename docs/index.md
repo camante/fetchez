@@ -26,7 +26,7 @@ title: The Generic Geospatial Data Acquisition and Registry Engine
 
 GeoFetch is a lightweight, open-source command-line tool and Python library designed to discover and download geospatial data from a wide variety of public repositories. 
 
-It unifies over **40 different data sources**—from NASA, USGS, NOAA, and ESA—into a single, standard interface.
+It unifies over **40 different data sources**, such as NASA, USGS, NOAA, and ESA, into a single, standard interface.
 
 * [View on GitHub](https://github.com/ciresdem/geofetch) - View the github repository.
 * [View Modules](https://github.com/ciresdem/geofetch/tree/main/src/geofetch/modules) - View the existing GeoFetch Modules.
@@ -38,7 +38,7 @@ It unifies over **40 different data sources**—from NASA, USGS, NOAA, and ESA�
 
 Fetching elevation, bathymetry, or oceanographic data usually involves navigating dozens of different APIs, FTP sites, and web portals. GeoFetch solves this by providing:
 
-* One syntax to rule them all. No more memorizing `curl` flags or API endpoints.
+* One command to fetch them all. No more memorizing `curl` flags or API endpoints.
 * Our local spatial index (FRED) lets you query file-based repositories (like NCEI or Copernicus) instantly without hammering remote servers.
 * Built-in connection pooling and byte-range support ensure large downloads survive flaky internet connections.
 
@@ -83,7 +83,7 @@ geofetch --modules
 # View detailed metadata for a specific module
 geofetch --info gmrt
 
-# Search for all USGS data
+# Search for modules based on tags or names
 geofetch --search usgs
 ```
 
