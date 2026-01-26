@@ -8,15 +8,13 @@ title: The Generic Geospatial Data Acquisition and Registry Engine
        _..._
      .'     '.      ___
     /    .-""-\   .'_  '\
-   |   /'  _   \ / / \   \    [ G E O F E T C H ]
-   |  |   (_)   |  |  \  |
-   \   \     /  \   \ /  /    Data Acquisition and Registry Engine
+   |   /'  _   \ / / \   \    
+   |  |   (_)   |  |  \  |  [    G    E   O  F E T C H . .. ]
+   \   \     /  \   \ /  /
     \   '.__.'   '.__.' /
      '.       _..._   .'
        '-----'     '-'
 </pre>
-
-# GeoFetch
 
 **The Generic Geospatial Data Acquisition and Registry Engine**
 
@@ -26,7 +24,7 @@ title: The Generic Geospatial Data Acquisition and Registry Engine
 
 GeoFetch is a lightweight, open-source command-line tool and Python library designed to discover and download geospatial data from a wide variety of public repositories. 
 
-It unifies over **40 different data sources**, such as NASA, USGS, NOAA, and ESA, into a single, standard interface.
+It unifies over **40 different data sources** (and counting), such as NASA, USGS, NOAA, and ESA, into a single, standard interface.
 
 * [View on GitHub](https://github.com/ciresdem/geofetch) - View the github repository.
 * [View Modules](https://github.com/ciresdem/geofetch/tree/main/src/geofetch/modules) - View the existing GeoFetch Modules.
@@ -59,7 +57,7 @@ pip install .
 The core philosophy is simple: Define a Region, Pick a Module.
 ### The Basics
 
-Fetch SRTM+ topography for a specific bounding box (West, East, South, North):
+Fetch SRTM+ topography for a specific bounding box (west, east, south, north):
 
 ``` bash
 geofetch -R -105.5/-104.5/39.5/40.5 srtm_plus
@@ -111,9 +109,9 @@ Adding a module is easy:
 
 1. Create a Class: Inherit from geofetch.core.FetchModule.
 
-2. Implement run(): Define how to translate a region into URLs suitable to download.
+2. Implement run(): Define how to translate user input into URLs suitable to download.
 
-3. Register It: Add your metadata (Agency, Resolution, License) to registry.py.
+3. Register It: Add your modules metadata (Agency, Resolution, License) to registry.py.
 
 We have a comprehensive guide to help you get started:
 
