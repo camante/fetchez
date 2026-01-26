@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+
 __version__ = "2.0.0"
 __author__ = "Matthew Love"
 __credits__ = "CIRES"
 
-from . import FRED
+# Import everything except the individual modules.
+from . import fred
 from . import core
 from . import cli
 from . import spatial
