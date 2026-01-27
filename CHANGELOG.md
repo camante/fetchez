@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2026-01-27
 ### Added
 - Initial standalone release of Fetchez.
 - Decoupled from CUDEM project.
@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New `fetchez.registry` for lazy module loading.
 - Modernized CLI with logging support.
 - FRED index now uses GeoJSON and Shapely directly (removed OGR dependency).
-
 - csb module
 - fetchez.spatial 'region_to_wkt' method
 - fetchez.core fetch_req now supports 'method' arg
@@ -26,7 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fetchez.spatial 'region_to_geojson_geom'
 - chs module
 - bluetopo module
-- user plugins	
+- user plugins
+- add emodnet
 	
 ### Changed
 - Renamed project from `fetches` to `fetchez`.
