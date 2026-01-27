@@ -54,7 +54,6 @@ class CheckPoints3DEP(core.FetchModule):
     def __init__(self, **kwargs):
     	# `name` here becomes the name of fetchez module in the cli
         super().__init__(name='my_checkpoints', **kwargs)
-        self.headers = HEADERS
         
     def run(self):
         # Use self.region if spatial filtering is needed
