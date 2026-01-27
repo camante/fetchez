@@ -12,7 +12,7 @@ jobs:
     
     # Permissions required for Trusted Publishing (OIDC) authentication
     permissions:
- t     id-token: write  # MANDATORY for OIDC
+      id-token: write  # MANDATORY for OIDC
       contents: read
 
     steps:
