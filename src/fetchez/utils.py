@@ -16,6 +16,7 @@ import os, sys
 import datetime
 import getpass
 import logging
+import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -80,8 +81,26 @@ def echo_highlight(msg: str):
     """Print a bold/highlighted message."""
     
     print(f"{BOLD}{msg}{RESET}")
+    
 
+class TqdmLoggingHandler(logging.Handler):
+    """A logging handler that outputs to tqdm.write() to avoid 
+    interfering with tqdm progress bars.
+    """
+    
+    def __init__(self, level=logging.NOTSET):
+        super().__init__(level)
 
+        
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            tqdm.tqdm.write(msg)
+            self.flush()
+        except Exception:
+            self.handleError(record)                
+
+            
 # =============================================================================
 # Data, Type and File Helpers
 # =============================================================================    

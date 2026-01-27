@@ -137,7 +137,7 @@ def fix_argparse_region(raw_argv):
 
         
 # =============================================================================
-# CLI Decorator and Decorations
+# CLI Decorator and Decorations and logging
 # =============================================================================
 def print_banner_orbit():
     C, B, G, R = "\033[36m", "\033[34m", "\033[32m", "\033[0m"
@@ -148,6 +148,23 @@ def print_banner_orbit():
 print_welcome_banner = print_banner_orbit
 
 
+def setup_logging(verbose=False):
+    log_level = logging.INFO if verbose else logging.WARNING
+    
+    logger = logging.getLogger('geofetch')
+    logger.setLevel(log_level)
+    
+    if logger.hasHandlers():
+        logger.handlers.clear()
+
+    handler = utils.TqdmLoggingHandler()
+    
+    formatter = logging.Formatter('[ %(levelname)s ] %(message)s')
+    handler.setFormatter(formatter)
+    
+    logger.addHandler(handler)
+
+    
 # =============================================================================
 # Registry & Help Helpers
 # =============================================================================
@@ -224,7 +241,7 @@ def fetchez_cli():
     _usage = f"%(prog)s [-R REGION] [-H THREADS] [-A ATTEMPTS] [-l] [-z] [-q] [-v] [-m] MODULE [MODULE-OPTS]..." 
 
     registry.FetchezRegistry.load_user_plugins()
-    
+
     parser = argparse.ArgumentParser(
         description=f"{utils.CYAN}%(prog)s{utils.RESET} ({__version__}) :: Fetch and process remote elevation data",
         formatter_class=argparse.RawTextHelpFormatter,
@@ -310,7 +327,8 @@ def fetchez_cli():
     
     level = logging.WARNING if global_args.quiet else logging.INFO
     logging.basicConfig(level=level, format='[ %(levelname)s ] %(name)s: %(message)s')
-
+    setup_logging() # this prevents logging from distorting tqdm and leaving partial tqdm bars everywhere...
+    
     if global_args.info:
         print_module_info(global_args.info)
         sys.exit(0)

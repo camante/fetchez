@@ -41,7 +41,7 @@ One of the most powerful features of `fetchez` is its plugin architecture. You c
 3.  It registers any class that inherits from `geofetch.core.FetchModule`.
 
 ### Example Plugin
-Create a file named `~/.fetchez/plugins/university_data.py`:
+Create a file named `~/.fetchez/plugins/my_uni.py`:
 
 ```python
 from fetchez import core, cli
@@ -49,42 +49,24 @@ from fetchez import core, cli
 @cli.cli_opts(
     help_text="Fetch research data from University Servers",
     semester="Target semester (e.g., f2023, s2024)",
-    instrument="Instrument ID (e.g., sensor_a)"
 )
-class UniversityData(core.FetchModule):
-    """
-    My Custom Fetcher.
+class MyUni(core.FetchModule):
+    """My Custom Data Fetcher"""
     
-    fetchez university_data --semester f2023 --instrument sensor_b
-    """
-    
-    def __init__(self, semester='f2023', instrument='sensor_a', **kwargs):
-        # The 'name' becomes the CLI command (snake_case recommended)
-        super().__init__(name='university_data', **kwargs)
+    def __init__(self, semester='s2024', **kwargs):
+        # The 'name' here becomes the CLI command
+        super().__init__(name='my_uni', **kwargs)
         self.semester = semester
-        self.instrument = instrument
         
     def run(self):
-        # 1. Use self.region if spatial filtering is needed
+        # Use self.region if spatial filtering is needed
         if self.region:
              print(f"Searching in region: {self.region}")
 
-        # 2. Generate your URLs
-        # (This is where you'd usually hit an API or parse a directory)
-        base_url = "[https://data.my-university.edu/archive](https://data.my-university.edu/archive)"
-        file_name = f"{self.instrument}_{self.semester}_data.csv"
-        download_link = f"{base_url}/{self.semester}/{file_name}"
-
-        # 3. Add to results queue
-        self.add_entry_to_results(
-            url=download_link,
-            dst_fn=file_name,
-            data_type='csv',
-            title=f"University Data {self.semester}"
-        )
-
-        return self
-
+	# (This is where you'd usually hit an API or parse a directory)	
+        url = f"https://data.uni.edu/{self.semester}/files.zip"
+        self.add_entry_to_results(url, "data.zip", "zip")
+    
 ```
 
 #### Testing Your Plugin
