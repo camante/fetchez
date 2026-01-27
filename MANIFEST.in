@@ -4,7 +4,7 @@ include CONTRIBUTING.md
 include pyproject.toml
 
 # Recursively include data files
-recursive-include src/geofetch/data *.geojson *.json
+recursive-include src/fetchez/data *.geojson *.json
 
 # Exclude junk
 global-exclude __pycache__

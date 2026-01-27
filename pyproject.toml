@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "geofetch"
+name = "fetchez"
 version = "2.0.0"
 description = "Geo-Spatial Data Fetching"
 readme = "README.md"
@@ -40,24 +40,24 @@ utm = ["utm"]
 
 [project.scripts]
 # CLI Entry Points
-gfetch = "geofetch.cli:geofetch_cli"
-geofetch = "geofetch.cli:geofetch_cli"
-bing_bfp = "geofetch.modules.bingbfp:bing_bfp_cli"
-osm_coast = "geofetch.modules.osm:osm_coast_cli"
+gfetch = "fetchez.cli:fetchez_cli"
+fetchez = "fetchez.cli:fetchez_cli"
+bing_bfp = "fetchez.modules.bingbfp:bing_bfp_cli"
+osm_coast = "fetchez.modules.osm:osm_coast_cli"
 
 [project.urls]
-Homepage = "https://github.com/ciresdem/geofetch"
-Issues = "https://github.com/ciresdem/geofetch/issues"
+Homepage = "https://github.com/ciresdem/fetchez"
+Issues = "https://github.com/ciresdem/fetchez/issues"
 
 # --- Setuptools Configuration for 'src' layout ---
 
 [tool.setuptools.packages.find]
 where = ["src"]  # Look for packages inside the 'src' folder
-include = ["geofetch*"]  # Include the package named 'geofetch'
+include = ["fetchez*"]  # Include the package named 'fetchez'
 exclude = ["tests*", "docs*", "scripts*"]
 namespaces = false 
 
 [tool.setuptools.package-data]
 # Keys are package names. Values are globs relative to that package root.
-# Example: src/geofetch/data/*.geojson -> "data/*.geojson"
-geofetch = ["data/*.geojson"]
+# Example: src/fetchez/data/*.geojson -> "data/*.geojson"
+fetchez = ["data/*.geojson"]

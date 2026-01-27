@@ -1,6 +1,6 @@
-# Contributing to GeoFetch
+# Contributing to Fetchez
 
-Thank you for considering contributing to GeoFetch! We welcome contributions from the community to help make geospatial data acquisition easier for everyone.
+Thank you for considering contributing to Fetchez! We welcome contributions from the community to help make geospatial data acquisition easier for everyone.
 
 Whether you're fixing a bug, adding a new data module, or improving documentation, this guide will help you get started.
 
@@ -9,8 +9,8 @@ Whether you're fixing a bug, adding a new data module, or improving documentatio
 1.  **Fork the Repository:** Click the "Fork" button on the top right of the GitHub page.
 2.  **Clone your Fork:**
     ```bash
-    git clone https://github.com/YOUR_USERNAME/geofetch.git
-    cd geofetch
+    git clone https://github.com/YOUR_USERNAME/fetchez.git
+    cd fetchez
     ```
 3.  **Create a Virtual Environment:**
     ```bash
@@ -36,14 +36,14 @@ If you find a bug, please create a new issue on GitHub. Include:
 The most common contribution is adding support for a new data source.
 
 1.  **Create the Module File:**
-    Create a new Python file in `src/geofetch/modules/` (e.g., `mydata.py`).
+    Create a new Python file in `src/fetchez/modules/` (e.g., `mydata.py`).
 
 2.  **Inherit from FetchModule:**
-    Your class must inherit from `geofetch.core.FetchModule`.
+    Your class must inherit from `fetchez.core.FetchModule`.
 
     ```python
-    from geofetch import core
-    from geofetch import cli
+    from fetchez import core
+    from fetchez import cli
 
     @cli.cli_opts(help_text="Fetch data from MyData Source")
     class MyData(core.FetchModule):
@@ -59,12 +59,12 @@ The most common contribution is adding support for a new data source.
     ```
 
 3. **Register the Module:**
-Open src/geofetch/registry.py and add your module to the _modules dictionary. Please fill out all metadata fields to aid in data discovery.
+Open src/fetchez/registry.py and add your module to the _modules dictionary. Please fill out all metadata fields to aid in data discovery.
 
 ```python
 
 'mydata': {
-    'mod': 'geofetch.modules.mydata', 
+    'mod': 'fetchez.modules.mydata', 
     'cls': 'MyData', 
     'category': 'Topography',
     'desc': 'Short summary of the dataset (e.g. Global Lidar Synthesis)',
@@ -81,7 +81,7 @@ Open src/geofetch/registry.py and add your module to the _modules dictionary. Pl
 ```
 
 4.  **Test It:**
-    Run `geofetch mydata --help` to ensure it loads correctly.
+    Run `fetchez mydata --help` to ensure it loads correctly.
 
 ## 📝 Pull Request Guidelines
 
@@ -89,11 +89,11 @@ Open src/geofetch/registry.py and add your module to the _modules dictionary. Pl
 2.  **Coding Style:**
     * Follow PEP 8 guidelines.
     * Use type hints where possible.
-    * Use `geofetch.spatial` helpers for region parsing; avoid manual coordinate unpacking.
+    * Use `fetchez.spatial` helpers for region parsing; avoid manual coordinate unpacking.
     * Use `logging` instead of `print`.
 3.  **Documentation:** Update the docstrings in your code. If you added a new module, ensure it has a class-level docstring describing the data source.
 4.  **Commit Messages:** Write clear, concise commit messages (e.g., "Add support for MyData API").
 
 ## ⚖️ License
 
-By contributing to GeoFetch, you agree that your contributions will be licensed under the MIT License.
+By contributing to Fetchez, you agree that your contributions will be licensed under the MIT License.
