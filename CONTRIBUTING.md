@@ -84,23 +84,27 @@ class UniversityData(core.FetchModule):
         )
 
         return self
-Testing Your Plugin
+
+```
+
+#### Testing Your Plugin
 Once you save the file, simply run:
 
-Bash
+```bash
 
 # Check if it loaded
 fetchez --modules | grep university_data
 
 # Run it
 fetchez -m university_data --semester s2024
-Promoting a Plugin
+```
+
+#### Promoting a Plugin
 Did you build a plugin that would be useful for the wider community? We'd love to have it!
 
 Submit a Pull Request adding your file to geofetch/modules/.
 
 Add a registry entry in geofetch/registry.py.
-
 
 ## 🌎 Adding a New Fetch Module
 
