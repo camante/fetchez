@@ -81,17 +81,6 @@ fetchez -R loc:"Boulder, CO" copernicus --datatype=1
 ```bash
 fetchez --modules
 ```
-
-### Common Flags
-
-``` 
--R, --region: Set the area of interest (Bounding Box, Place Name, or File).
--l, --list: Print the URLs found but do not download them.
--H, --threads: Number of parallel download threads (default: 1).
---info: Display metadata (Agency, License, Resolution) for a module.
---search: Search metadata (Agency, License, Resolution) for a module.
-```
-
 ## 🐍 Python API
 
 Fetchez is designed to be easily integrated into Python workflows.
