@@ -164,6 +164,19 @@ Fetchez supports over 40 modules categorized by data type. Run ```fetchez --modu
 | Reference | osm (OpenStreetMap), vdatum |
 | Generic | http (Direct URL), earthdata (NASA) |
 
+## 🐄 Plugins & Extensions
+
+Need to fetch data from a specialized local server, a private S3 bucket, or a niche API? You don't need to fork the repo!
+
+**Fetchez** supports user-defined plugins. Simply drop a Fetchez compatible Python script into your configuration folder, and it will be automatically registered as a command.
+
+**Quick Start:**
+1.  Create the folder: `mkdir -p ~/.fetchez/plugins`
+2.  Drop a python script there (e.g., `my_data.py`).
+3.  Run it: `fetchez -m my_data`
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for a full code example.
+
 ## 🛠️ Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](/CONTRIBUTING.md) for details on how to register new modules with our metadata schema.

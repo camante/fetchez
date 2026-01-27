@@ -31,6 +31,77 @@ If you find a bug, please create a new issue on GitHub. Include:
 * Your operating system and Python version.
 * (If possible) The specific region (`-R`) and module that caused the failure.
 
+## 🐄 Developing User Plugins
+
+One of the most powerful features of `fetchez` is its plugin architecture. You can write your own modules to fetch data from custom sources and use them immediately with the full power of the `fetchez` CLI (smart regions, threading, retries, etc.).
+
+### How it Works
+1.  `fetchez` scans `~/.fetchez/plugins/` at runtime.
+2.  It loads any `.py` file it finds.
+3.  It registers any class that inherits from `geofetch.core.FetchModule`.
+
+### Example Plugin
+Create a file named `~/.fetchez/plugins/university_data.py`:
+
+```python
+from fetchez import core, cli
+
+@cli.cli_opts(
+    help_text="Fetch research data from University Servers",
+    semester="Target semester (e.g., f2023, s2024)",
+    instrument="Instrument ID (e.g., sensor_a)"
+)
+class UniversityData(core.FetchModule):
+    """
+    My Custom Fetcher.
+    
+    fetchez -m university_data --semester f2023 --instrument sensor_b
+    """
+    
+    def __init__(self, semester='f2023', instrument='sensor_a', **kwargs):
+        # The 'name' becomes the CLI command (snake_case recommended)
+        super().__init__(name='university_data', **kwargs)
+        self.semester = semester
+        self.instrument = instrument
+        
+    def run(self):
+        # 1. Use self.region if spatial filtering is needed
+        if self.region:
+             print(f"Searching in region: {self.region}")
+
+        # 2. Generate your URLs
+        # (This is where you'd usually hit an API or parse a directory)
+        base_url = "[https://data.my-university.edu/archive](https://data.my-university.edu/archive)"
+        file_name = f"{self.instrument}_{self.semester}_data.csv"
+        download_link = f"{base_url}/{self.semester}/{file_name}"
+
+        # 3. Add to results queue
+        self.add_entry_to_results(
+            url=download_link,
+            dst_fn=file_name,
+            data_type='csv',
+            title=f"University Data {self.semester}"
+        )
+
+        return self
+Testing Your Plugin
+Once you save the file, simply run:
+
+Bash
+
+# Check if it loaded
+fetchez --modules | grep university_data
+
+# Run it
+fetchez -m university_data --semester s2024
+Promoting a Plugin
+Did you build a plugin that would be useful for the wider community? We'd love to have it!
+
+Submit a Pull Request adding your file to geofetch/modules/.
+
+Add a registry entry in geofetch/registry.py.
+
+
 ## 🌎 Adding a New Fetch Module
 
 The most common contribution is adding support for a new data source.
