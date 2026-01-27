@@ -8,6 +8,8 @@
 [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/ciresdem/fetchez)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-yellow.svg)](https://www.python.org/)
+[![Downloads](https://static.pepy.tech/badge/fetchez)](https://pepy.tech/project/fetchez)
+[![PyPI version](https://badge.fury.io/py/fetchez.svg)](https://badge.fury.io/py/fetchez)
 
 **Fetchez** is a lightweight, modular Python library and command-line tool designed to discover and retrieve geospatial data from a wide variety of public repositories.
 
