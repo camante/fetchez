@@ -4,9 +4,7 @@ title: The Generic Geospatial Data Acquisition and Registry Engine
 
 <link rel="stylesheet" href="style.css" />
 
-<pre style="background-color: #FFFFFF;">
-🐄🌍 [ F E T C H E Z ] 🌍🐄
-</pre>
+# 🐄🌍 [ F E T C H E Z ] 🌍🐄
 
 **The Generic Geospatial Data Acquisition and Registry Engine**
 
