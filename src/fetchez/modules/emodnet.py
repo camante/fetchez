@@ -19,7 +19,6 @@ from fetchez import cli
 EMODNET_WCS_URL = 'https://ows.emodnet-bathymetry.eu/wcs?'
 EMODNET_ERDDAP_BASE = 'https://erddap.emodnet.eu/erddap/griddap/dtm_2020_v2_e0bf_e7e4_5b8f'
 
-# Default Resolution (1/16 arc minute)
 RES_115M = 0.00104166666666667 
 
 # =============================================================================
@@ -32,6 +31,7 @@ RES_115M = 0.00104166666666667
     layer="Data Layer: 'mean' (Depth), 'std' (Error), 'source' (Source ID), 'quality'",
     resolution="Override WCS resolution (in degrees). Default is ~0.001 (115m)."
 )
+
 class EMODNet(core.FetchModule):
     """Fetch Digital Terrain Model data from EMODnet Bathymetry.
     
