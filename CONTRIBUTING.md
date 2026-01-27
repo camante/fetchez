@@ -24,6 +24,7 @@ Whether you're fixing a bug, adding a new data module, or improving documentatio
 
 ## 🐛 Reporting Bugs
 
+
 If you find a bug, please create a new issue on GitHub. Include:
 * The exact command you ran.
 * The error message / traceback.
