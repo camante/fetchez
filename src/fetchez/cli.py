@@ -223,7 +223,7 @@ def fetchez_cli():
 
     _usage = f"%(prog)s [-R REGION] [-H THREADS] [-A ATTEMPTS] [-l] [-z] [-q] [-v] [-m] MODULE [MODULE-OPTS]..." 
 
-    #registry.FetchezRegistry.load_user_plugins()
+    registry.FetchezRegistry.load_user_plugins()
     
     parser = argparse.ArgumentParser(
         description=f"{utils.CYAN}%(prog)s{utils.RESET} ({__version__}) :: Fetch and process remote elevation data",

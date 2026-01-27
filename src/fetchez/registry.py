@@ -456,7 +456,6 @@ class FetchezRegistry:
             if filename.endswith(".py") and not filename.startswith("_"):
                 filepath = os.path.join(plugin_dir, filename)
                 module_name = f"user_plugin_{filename[:-3]}"
-                
                 try:
                     spec = importlib.util.spec_from_file_location(module_name, filepath)
                     if spec and spec.loader:
@@ -517,4 +516,4 @@ class FetchezRegistry:
         return sorted(matches)
 
 
-FetchezRegistry.load_user_plugins()
+#FetchezRegistry.load_user_plugins()
