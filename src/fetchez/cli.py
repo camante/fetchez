@@ -142,15 +142,7 @@ def fix_argparse_region(raw_argv):
 def print_banner_orbit():
     C, B, G, R = "\033[36m", "\033[34m", "\033[32m", "\033[0m"
     print(f"""
-       {B}  _..._
-       {B}.'     '.      {C}___
-      {B}/    .-""-\\   {C}.'_  '\\
-     {B}|   /{G}'  _   {B}\\ {C}/ / \\   \\
-     {B}|  |   {G}(_)   {B}|  {C}|  \\  |    [ : {C}G E O{R} {B}F E T C H {B}: ]{R}
-     {B}\\   \\     /  {C}\\   \\ /  /
-      {B}\\   '.__.'   {C}'.__.' /{R}
-       {B}'.       _..._   .'{R}
-         {B}'-----'     '-'{R}
+    [ F E T C H E Z ]
     """)
 
 print_welcome_banner = print_banner_orbit
