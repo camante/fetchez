@@ -233,8 +233,29 @@ def print_module_info(mod_key):
 
     
 # =============================================================================
-# Command-line Interface (CLI)
+# Command-line Interface(s) (CLI)
 # =============================================================================
+def inventory_cli(args):
+    """fetchez-inventory -R ... module1 module2 ..."""
+    
+    region = spatial.parse_region(args.region)
+    
+    modules = []
+    for mod_name in args.modules:
+        cls = registry.FetchezRegistry.load_module(mod_name)
+        if cls:
+            modules.append(cls())
+            
+    report = core.inventory(modules, region, out_format=args.format)
+    
+    if args.output:
+        with open(args.output, 'w') as f:
+            f.write(report)
+        print(f"Inventory saved to {args.output}")
+    else:
+        print(report)
+
+        
 def fetchez_cli():
     """Run fetchez from command-line using argparse."""
 
