@@ -152,7 +152,6 @@ class DAV(core.FetchModule):
                     if os.path.exists(local_urllist):
                         os.remove(local_urllist)
         
-        # 2. Check for zip directly in HTML
         if not index_zip_url:
             zip_links = page.xpath('//a[contains(@href, ".zip")]/@href')
             tile_zip = next((l for l in zip_links if 'tileindex' in l), None)
@@ -167,6 +166,7 @@ class DAV(core.FetchModule):
     
     def _intersects(self, box_a, box_b):
         """Simple AABB intersection check: [xmin, ymin, xmax, ymax]."""
+        
         return not (box_b[0] > box_a[2] or 
                     box_b[2] < box_a[0] or 
                     box_b[1] > box_a[3] or 
@@ -326,3 +326,75 @@ class DAV(core.FetchModule):
 
         return self
 
+# =============================================================================
+# Subclasses / Shortcuts
+# =============================================================================
+@cli.cli_opts(
+    help_text="NOAA Sea Level Rise (SLR) DEMs",
+    want_footprints="Fetch the dataset footprint (tile index) zip only",
+    keep_footprints="Keep the downloaded tile index zip after processing"
+)
+
+class SLR(DAV):
+    """Fetch NOAA Sea Level Rise (SLR) DEMs.
+    
+    This is a shortcut for the DAV module that specifically filters for 
+    'SLR' in the dataset title and requests DEM/Raster data.
+    """
+    
+    def __init__(self, **kwargs):
+        kwargs.pop('datatype', None)
+        kwargs.pop('title_filter', None)
+        
+        super().__init__(
+            name='slr', 
+            datatype='raster', 
+            title_filter='SLR', 
+            **kwargs
+        )
+
+        
+@cli.cli_opts(
+    help_text="USGS/NOAA Coastal National Elevation Database (CoNED)",
+    want_footprints="Fetch the dataset footprint (tile index) zip only",
+    keep_footprints="Keep the downloaded tile index zip after processing"
+)
+
+class CoNED(DAV):
+    """Fetch CoNED Topobathymetric Models.
+    
+    This is a shortcut for the DAV module that filters for 'CoNED' data.
+    """
+    
+    def __init__(self, **kwargs):
+        kwargs.pop('datatype', None)
+        kwargs.pop('title_filter', None)
+        
+        super().__init__(
+            name='coned', 
+            datatype='raster', 
+            title_filter='CoNED', 
+            **kwargs
+        )
+
+        
+@cli.cli_opts(
+    help_text="CUDEM (Continuously Updated Digital Elevation Model)",
+    want_footprints="Fetch the dataset footprint (tile index) zip only",
+    keep_footprints="Keep the downloaded tile index zip after processing"
+)
+
+class CUDEM(DAV):
+    """Fetch CUDEM Tiled DEMs via Digital Coast.
+    """
+    
+    def __init__(self, **kwargs):
+        kwargs.pop('datatype', None)
+        kwargs.pop('title_filter', None)
+        
+        super().__init__(
+            name='cudem', 
+            datatype='raster', 
+            title_filter='CUDEM', 
+            **kwargs
+        )

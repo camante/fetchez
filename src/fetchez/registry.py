@@ -76,7 +76,7 @@ class FetchezRegistry:
             }
         },
 
-        # Digital Coast (DAV)
+        # Digital Coast (DAV) and shortcuts (slr, cudem, coned)
         'dav': {
             'mod': 'fetchez.modules.dav', 
             'cls': 'DAV', 
@@ -88,6 +88,42 @@ class FetchezRegistry:
             'resolution': 'Variable',
             'license': 'Public Domain',
             'urls': {'home': 'https://coast.noaa.gov/dataviewer/'}
+        },
+        'slr': {
+            'mod': 'fetchez.modules.dav', 
+            'cls': 'SLR', 
+            'category': 'Topography',
+            'desc': 'NOAA Sea Level Rise DEMs',
+            'agency': 'NOAA',
+            'tags': ['slr', 'dem', 'elevation', 'coastal'],
+            'region': 'USA / Coastal',
+            'resolution': 'Various',
+            'license': 'Public Domain',
+            'urls': {'home': 'https://coast.noaa.gov/slr/'}
+        },
+        'coned': {
+            'mod': 'fetchez.modules.dav', 
+            'cls': 'CoNED', 
+            'category': 'Topography',
+            'desc': 'Coastal National Elevation Database (CoNED)',
+            'agency': 'USGS / NOAA',
+            'tags': ['coned', 'topobathy', 'dem'],
+            'region': 'USA / Coastal',
+            'resolution': '1m - 3m',
+            'license': 'Public Domain',
+            'urls': {'home': 'https://www.usgs.gov/core-science-systems/ngp/coned'}
+        },
+        'cudem': {
+            'mod': 'fetchez.modules.dav', 
+            'cls': 'CUDEM', 
+            'category': 'Bathymetry',
+            'desc': 'Continuously Updated DEM (CUDEM)',
+            'agency': 'NOAA',
+            'tags': ['cudem', 'bathymetry', 'dem'],
+            'region': 'USA / Coastal',
+            'resolution': '1/9 Arc-Second',
+            'license': 'Public Domain',
+            'urls': {'home': 'https://coast.noaa.gov/digitalcoast/data/cudem.html'}
         },
         
         # NOAA ETOPO-2022
