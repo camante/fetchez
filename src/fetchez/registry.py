@@ -59,6 +59,19 @@ class FetchezRegistry:
             }
         },
 
+        'gebco': {
+            'mod': 'fetchez.modules.gebco', 
+            'cls': 'GEBCO', 
+            'category': 'Bathymetry',
+            'desc': 'General Bathymetric Chart of the Oceans (GEBCO)',
+            'agency': 'GEBCO / IHO / IOC',
+            'tags': ['gebco', 'bathymetry', 'global', 'wcs', 'tid'],
+            'region': 'Global',
+            'resolution': '15 arc-seconds (~500m)',
+            'license': 'Public Domain / Attribution',
+            'urls': {'home': 'https://www.gebco.net/'}
+        },
+        
         # Copernicus DEMs
         'copernicus': {
             'mod': 'fetchez.modules.copernicus', 
