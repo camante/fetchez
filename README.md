@@ -173,7 +173,7 @@ fetchez <module_name> --help
 If a dependency is missing, the module will typically exit gracefully with an error message telling you exactly what to pip install.
 ```
 
-## 🐄 Plugins & Extensions
+## 🐄  Plugins & Extensions
 
 Need to fetch data from a specialized local server, a private S3 bucket, or a niche API? You don't need to fork the repo!
 
@@ -186,11 +186,11 @@ Need to fetch data from a specialized local server, a private S3 bucket, or a ni
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for a full code example.
 
-## 🛠️ Contributing
+## 🛠  Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](/CONTRIBUTING.md) for details on how to register new modules with our metadata schema.
 
-## ⚠️ Disclaimer on Data Persistence
+## 🔱  Disclaimer on Data Persistence
 
 We provide the tools to locate and download data from authoritative public repositories, but we do not host the data ourselves.
 
@@ -202,7 +202,7 @@ Remote servers (like NOAA NCEI, USGS, or Copernicus) may experience downtime, th
 
 We strive to keep our modules robust and our index fresh. If you encounter a broken fetch or a changed endpoint, please open an issue. This helps the whole community keep up with the changes!
 
-## 📄 License
+## 📄  License
 
 This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details.
 
