@@ -10,7 +10,7 @@ Fetches Remote Elevation Datalist (FRED)
 Handles the indexing, storage, and spatial querying of remote datasets 
 that lack a public API but provide file lists (e.g., NCEI Thredds, USACE).
 
-:copyright: (c) 2012 - 2026 CIRES Coastal DEM Team
+:copyright: (c) 2010 - 2026 Regents of the University of Colorado
 :license: MIT, see LICENSE for more details.
 """
 
@@ -215,3 +215,114 @@ class FRED:
             val = f.get('properties', {}).get(field)
             if val: values.add(val)
         return list(values)
+
+
+    def _detect_spatial_fields(self, row: Dict) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[float]]:
+        """Attempt to find W/E/S/N in a dictionary using common abbreviations."""
+        
+        keys_w = ['w', 'west', 'xmin', 'min_lon', 'min_x', 'left']
+        keys_e = ['e', 'east', 'xmax', 'max_lon', 'max_x', 'right']
+        keys_s = ['s', 'south', 'ymin', 'min_lat', 'min_y', 'bottom']
+        keys_n = ['n', 'north', 'ymax', 'max_lat', 'max_y', 'top']
+        
+        def get_val(keys):
+            for k in keys:
+                # Try exact match
+                if k in row: return float(row[k])
+                # Try Case-Insensitive
+                for rk in row.keys():
+                    if rk.lower() == k: return float(row[rk])
+            return None
+
+        return get_val(keys_w), get_val(keys_e), get_val(keys_s), get_val(keys_n)
+
+    
+    def ingest(self, source_file: str, field_map: Dict[str, str] = None, wipe: bool = False):
+        """Ingest a file listing (CSV or JSON) into the FRED index.
+
+        Args:
+            source_file: Path to the CSV or JSON file.
+            field_map: Dictionary mapping Input_Header -> FRED_Field.
+                       Example: {'file_url': 'DataLink', 'file_name': 'Name'}
+            wipe: If True, clears existing index before ingesting.
+        """
+        
+        if not os.path.exists(source_file):
+            logger.error(f"Source file not found: {source_file}")
+            return
+            
+        if wipe:
+            self.features = []
+
+        field_map = field_map or {}
+        ext = source_file.split('.')[-1].lower()
+        
+        items = []
+        
+        try:
+            if ext == 'csv':
+                with open(source_file, 'r', encoding='utf-8-sig') as f:
+                    reader = csv.DictReader(f)
+                    items = list(reader)
+            elif ext == 'json':
+                with open(source_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    if isinstance(data, list): items = data
+                    elif 'files' in data: items = data['files']
+                    elif 'items' in data: items = data['items']
+            else:
+                logger.error("Unsupported file format. Use CSV or JSON.")
+                return
+        except Exception as e:
+            logger.error(f"Failed to read source file: {e}")
+            return
+
+        logger.info(f"Ingesting {len(items)} items from {source_file}...")
+        
+        added = 0
+        for item in items:
+            props = {}
+            
+            for field in self.SCHEMA:
+                if field in item: props[field] = item[field]
+                elif field.lower() in item: props[field] = item[field.lower()]
+
+            for src_k, dst_k in field_map.items():
+                if src_k in item:
+                    props[dst_k] = item[src_k]
+
+            if 'DataLink' not in props:
+                for k, v in item.items():
+                    if 'url' in k.lower() or 'link' in k.lower() or 'path' in k.lower():
+                        props['DataLink'] = v
+                        break
+                    
+            if 'DataLink' not in props:
+                logger.warning(f"Skipping item {item}: No DataLink/URL found.")
+                continue
+
+            link = props.get('DataLink')
+            if link and not link.startswith('http') and not link.startswith('ftp'):
+                abs_path = os.path.abspath(link)
+                props['DataLink'] = f"file://{abs_path}"
+            
+            w, e, s, n = self._detect_spatial_fields(item)
+            
+            if None in [w, e, s, n]:
+                logger.warning(f"Skipping item {props.get('Name')}: Missing spatial bounds.")
+                continue
+                
+            # Create GeoJSON Polygon
+            # Counter-clockwise: SW -> SE -> NE -> NW -> SW
+            geom = {
+                "type": "Polygon",
+                "coordinates": [[
+                    [w, s], [e, s], [e, n], [w, n], [w, s]
+                ]]
+            }
+            
+            self.add_survey(geom, **props)
+            added += 1
+            
+        logger.info(f"Successfully added {added} surveys to {self.name}.")
+        self.save()    

@@ -444,6 +444,31 @@ class Fetch:
             verbose=True
     ) -> int:
         """Fetch src_url and save to dst_fn with robust resume support."""
+
+        if self.url and self.url.startswith('file://'):
+            src_path = self.url[7:] # Strip 'file://'
+            
+            # Reference Mode (Source == Destination)
+            # Just index/verify the file, not move it.
+            if os.path.abspath(src_path) == os.path.abspath(dst_fn):
+                if os.path.exists(src_path):
+                    if verbose: logger.info(f"Verified local: {src_path}")
+                    return 0
+                else:
+                    logger.error(f"Missing local file: {src_path}")
+                    return -1
+            
+            # Staging Mode (Copy from Network/Local -> Output Dir)
+            else:
+                try:
+                    import shutil
+                    if not os.path.exists(os.path.dirname(dst_fn)):
+                        os.makedirs(os.path.dirname(dst_fn))
+                    shutil.copy2(src_path, dst_fn)
+                    return 0
+                except Exception as e:
+                    logger.error(f"Local copy failed: {e}")
+                    return -1
         
         dst_dir = os.path.abspath(os.path.dirname(dst_fn))
         if not os.path.exists(dst_dir):

@@ -41,6 +41,16 @@ class FetchezRegistry:
         
         # Generic https module to send an argument to FetchModule.results
         'https': {'mod': 'fetchez.core', 'cls': 'HttpDataset', 'category': 'Generic'},
+
+        'local': {
+            'mod': 'fetchez.modules.local', 
+            'cls': 'Local', 
+            'category': 'User Data',
+            'desc': 'Query local or custom FRED indices',
+            'tags': ['local', 'custom', 'index'],
+            'region': 'Custom',
+            'resolution': 'N/A',
+        },
         
         # GMRT
         'gmrt': {
