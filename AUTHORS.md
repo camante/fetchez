@@ -6,5 +6,5 @@
 ## Contributors
 * Elliot Lim (@e1im)
 * Christopher Amante (@camante)
-* Michael McFerrin
+* Michael McFerrin (@mmacferrin)
 * Matt Fisher (@mfisher87)
