@@ -88,7 +88,7 @@ fetchez my_checkpoints
 #### Promoting a Plugin
 Did you build a plugin that would be useful for the wider community? We'd love to incorporate it!
 
-Submit a Pull Request adding your file to fetchez/modules/. See [Adding a New Fetch Module](#adding-a-new-fetch-module)
+Submit a Pull Request adding your file to fetchez/modules/. See [Adding a New Fetch Module](#-adding-a-new-fetch-module)
 
 ## 🌎 Adding a New Fetch Module
 
