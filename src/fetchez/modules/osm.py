@@ -63,7 +63,6 @@ PRESETS = {
     query="Preset ('coastline', 'water', 'buildings') or raw Overpass QL.",
     chunk_size="Split region into chunks of N degrees (e.g. 0.5) to avoid timeouts."
 )
-
 class OSM(core.FetchModule):
     """Fetch raw OpenStreetMap data using the Overpass API.
     

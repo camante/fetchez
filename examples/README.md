@@ -24,6 +24,6 @@ Unlike the core `fetchez` CLI, these scripts may require additional dependencies
 
 Have a cool script? We'd love to see it!
 
-1.  **Keep it focused:** The script should solve one specific problem well.
-2.  **Use `fetchez`:** The script should use `fetchez` in some way.
-3.  **Document imports:** If you use external libraries outside of `fetchez` core, please list them at the top of your file.
+1.  The script should solve one specific problem well.
+2.  The script should use `fetchez` in some way.
+3.  If you use external libraries outside of `fetchez` core, please list them at the top of your file.

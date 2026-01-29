@@ -28,7 +28,6 @@ HEADERS = {
 @cli.cli_opts(
     help_text="NASA Digital Elevation Model (NASADEM)"
 )
-
 class NASADEM(core.FetchModule):
     """Fetch NASADEM Global Elevation data.
     
