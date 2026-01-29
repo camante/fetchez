@@ -7,7 +7,7 @@ fetchez.core
 
 This module is the core of the Fetchez library. 
 It handles the initialization of fetchers, connection pooling, 
-and the base FetchModule class.
+threading, and the base FetchModule class.
 
 :copyright: (c) 2010-2026 Regents of the University of Colorado
 :license: MIT, see LICENSE for more details.
@@ -178,9 +178,7 @@ def get_credentials(url: str, authenticator_url: str = 'https://urs.earthdata.na
 # XML / ISO Metadata Helper
 # =============================================================================
 class iso_xml:
-    """
-    Helper class for parsing ISO 19115 XML Metadata.
-    """
+    """Helper class for parsing ISO 19115 XML Metadata."""
     
     def __init__(self, url=None, xml=None, timeout=20, read_timeout=60):
         self.url = url
@@ -208,7 +206,7 @@ class iso_xml:
             parser = lxml.etree.XMLParser(recover=True)
             self.xml_doc = lxml.etree.fromstring(content, parser=parser)
         except Exception as e:
-            logger.error(f"XML Parsing failed: {e}")
+            logger.error(f'XML Parsing failed: {e}')
             self.xml_doc = None
 
             
@@ -252,8 +250,6 @@ class iso_xml:
         
         if self.xml_doc is None: return None
         
-        # NOAA typically puts the data link in distributionInfo
-        # We look for ANY URL in the distribution block.
         try:
             urls = self.xml_doc.xpath(
                 './/gmd:distributionInfo//gmd:URL/text() | .//gmd:distributionInfo//gmd:linkage/gco:CharacterString/text()', 
@@ -261,11 +257,11 @@ class iso_xml:
             )
             for u in urls:
                 u = u.strip()
-                # Prioritize zip files (actual data) over metadata links
+                # we want zip files (actual data) over metadata links
                 if '.zip' in u.lower(): 
                     return u
             
-            # Fallback: return first URL if no zip found
+            # return first URL if no zip found
             if urls: return urls[0].strip()
             
         except Exception:
@@ -301,8 +297,8 @@ class iso_xml:
                     geojson_dict = mapping(poly)
                 else:
                     geojson_dict = {
-                        "type": "Polygon",
-                        "coordinates": [
+                        'type': 'Polygon',
+                        'coordinates': [
                             out_poly 
                         ]
                     }
@@ -315,72 +311,6 @@ class iso_xml:
         except (IndexError, ValueError):
             logger.error('Could not parse polygon from xml')
             return None
-
-
-def inventory(modules: List['FetchModule'], region: Tuple[float, float, float, float], out_format: str = 'json') -> str:
-    """ Run the specified modules to discover available data, but do NOT download.
-    Returns the inventory as a string (JSON/CSV).
-    
-    Args:
-        modules: List of instantiated FetchModule objects.
-        region: The bounding box (w, e, s, n).
-        out_format: 'json', 'csv', or 'geojson'.
-    """
-    
-    import json
-    import csv
-    from io import StringIO
-    
-    inventory_list = []
-    
-    with tqdm(total=len(modules), desc="Scanning Datasets", unit="mod") as pbar:
-        for mod in modules:
-            try:
-                mod.region = region
-                mod.run()
-
-                for res in mod.results:
-                    item = {
-                        'module': mod.name,
-                        'title': res.get('title', 'Unknown'),
-                        'url': res.get('url'),
-                        'filename': res.get('dst_fn'),
-                        'date': res.get('date', ''),
-                        'size': res.get('size', '') # Some modules might populate this
-                    }
-                    inventory_list.append(item)
-                    
-            except Exception as e:
-                logger.error(f"Module {mod.name} failed during inventory: {e}")
-            
-            pbar.update(1)
-
-    if out_format == 'json':
-        return json.dumps(inventory_list, indent=2)
-        
-    elif out_format == 'csv':
-        output = StringIO()
-        if inventory_list:
-            keys = inventory_list[0].keys()
-            dict_writer = csv.DictWriter(output, keys)
-            dict_writer.writeheader()
-            dict_writer.writerows(inventory_list)
-        return output.getvalue()
-
-    elif out_format == 'geojson':
-        features = []
-        for item in inventory_list:
-            # maybe have modules attach 'geom' to results
-            feat = {
-                "type": "Feature",
-                "properties": item,
-                "geometry": None 
-            }
-            features.append(feat)
-            
-        return json.dumps({"type": "FeatureCollection", "features": features}, indent=2)
-
-    return ""
 
         
 # =============================================================================    
@@ -465,7 +395,7 @@ class Fetch:
                     return req
 
             except Exception as e:
-                logger.warning(f"Attempt {attempt + 1}/{tries} failed: {e}")
+                logger.warning(f'Attempt {attempt + 1}/{tries} failed: {e}')
                 if current_timeout: current_timeout *= 2
                 if current_read_timeout: current_read_timeout *= 2
                 time.sleep(1)
@@ -509,22 +439,24 @@ class Fetch:
             check_size=True,
             verbose=True
     ) -> int:
-        """Fetch src_url and save to dst_fn with robust resume support."""
+        """Fetch src_url and save to dst_fn with resume support."""
 
+        # check if input `url` is a file path. Either check if it exists and move on or
+        # copy it to the destination directory.
         if self.url and self.url.startswith('file://'):
             src_path = self.url[7:] # Strip 'file://'
             
-            # Reference Mode (Source == Destination)
+            # Source == Destination
             # Just index/verify the file, not move it.
             if os.path.abspath(src_path) == os.path.abspath(dst_fn):
                 if os.path.exists(src_path):
-                    if verbose: logger.info(f"Verified local: {src_path}")
+                    if verbose: logger.info(f'Verified local: {src_path}')
                     return 0
                 else:
-                    logger.error(f"Missing local file: {src_path}")
+                    logger.error(f'Missing local file: {src_path}')
                     return -1
             
-            # Staging Mode (Copy from Network/Local -> Output Dir)
+            # Copy from Network/Local -> Output Dir
             else:
                 try:
                     import shutil
@@ -533,9 +465,10 @@ class Fetch:
                     shutil.copy2(src_path, dst_fn)
                     return 0
                 except Exception as e:
-                    logger.error(f"Local copy failed: {e}")
+                    logger.error(f'Local copy failed: {e}')
                     return -1
-        
+
+        # Regular file fetching here-on-out
         dst_dir = os.path.abspath(os.path.dirname(dst_fn))
         if not os.path.exists(dst_dir):
             try:
@@ -543,7 +476,7 @@ class Fetch:
             except OSError:
                 pass 
 
-        part_fn = f"{dst_fn}.part"
+        part_fn = f'{dst_fn}.part'
         
         if not overwrite and os.path.exists(dst_fn):
             if not check_size:
@@ -593,7 +526,7 @@ class Fetch:
                     if req.status_code == 416: 
                         # Range No Good: Local file is likely corrupt.
                         # Delete .part and retry from scratch (next loop iteration)
-                        logger.warning(f"Invalid Range for {os.path.basename(dst_fn)}. Restarting...")
+                        logger.warning(f'Invalid Range for {os.path.basename(dst_fn)}. Restarting...')
                         if os.path.exists(part_fn):
                             os.remove(part_fn)
                         if 'Range' in self.headers:
@@ -602,14 +535,14 @@ class Fetch:
                     
                     elif req.status_code == 401:
                          # Authentication Error
-                         raise UnboundLocalError("Authentication Failed")
+                         raise UnboundLocalError('Authentication Failed')
                     
                     elif req.status_code not in [200, 206]:
                         # Fatal error for this attempt
                         if attempt < tries - 1:
                             time.sleep(2)
                             continue
-                        raise ConnectionError(f"Status {req.status_code}")
+                        raise ConnectionError(f'Status {req.status_code}')
 
                     with open(part_fn, mode) as f:
                         desc = utils.str_truncate_middle(self.url, n=60)
@@ -626,24 +559,24 @@ class Fetch:
                         ) as pbar:
                             for chunk in req.iter_content(chunk_size=8192):
                                 if STOP_EVENT.is_set():
-                                    logger.warning("Download cancelled by user.")
+                                    logger.warning('Download cancelled by user.')
                                     return -1
                                 if chunk:
                                     f.write(chunk)
                                     pbar.update(len(chunk))
                     
-                    # If we got here without exception, check size
+                    # If we got here without exception, check size, if wanted
                     if check_size and total_size > 0:
                         final_size = os.path.getsize(part_fn)
                         if final_size < total_size:
                             # If smaller, the connection was most likely cut.
-                            raise IOError(f"Incomplete download: {final_size}/{total_size} bytes")
+                            raise IOError(f'Incomplete download: {final_size}/{total_size} bytes')
                         
                         elif final_size > total_size:
                             # If larger, it was likely decompressed on the fly (GZIP).
                             logger.debug(
-                                f"File size ({final_size}) > Header ({total_size}). "
-                                "Assuming transparent decompression."
+                                f'File size ({final_size}) > Header ({total_size}). '
+                                'Assuming transparent decompression.'
                             )
                             
                         else:
@@ -655,10 +588,10 @@ class Fetch:
             except (requests.exceptions.RequestException, IOError, UnboundLocalError) as e:
                 if attempt < tries - 1:
                     wait_time = (attempt + 1) * 2
-                    logger.warning(f"Download failed: {e}. Retrying in {wait_time}s...")
+                    logger.warning(f'Download failed: {e}. Retrying in {wait_time}s...')
                     time.sleep(wait_time)
                 else:
-                    logger.error(f"Failed to download {self.url}: {e}")
+                    logger.error(f'Failed to download {self.url}: {e}')
                     return -1
         
         return -1    
@@ -706,7 +639,6 @@ def fetch_queue(q: queue.Queue, stop_event: threading.Event, c: bool = True):
             q.task_done()
             continue
         
-        ## Ensure dir exists
         if not os.path.exists(os.path.dirname(local_path)):
             try: os.makedirs(os.path.dirname(local_path))
             except: pass
@@ -734,7 +666,7 @@ def fetch_queue(q: queue.Queue, stop_event: threading.Event, c: bool = True):
                 ).fetch_file(local_path, check_size=c)
 
             if status == 0:
-                logger.info(f"File {local_path} was fetched succesfully.")
+                logger.info(f'File {local_path} was fetched succesfully.')
                 
             ## Record result
             fetch_results_entry = [url, local_path, data_type, status]
@@ -747,7 +679,7 @@ def fetch_queue(q: queue.Queue, stop_event: threading.Event, c: bool = True):
             if retries > 0:
                 q.put([url, local_path, data_type, module, retries - 1, results_list])
             else:
-                logger.error(f"Failed to fetch {os.path.basename(local_path)}: {e}")
+                logger.error(f'Failed to fetch {os.path.basename(local_path)}: {e}')
                 results_list.append([url, local_path, data_type, str(e)])
                 
                 if callable(module.callback):
@@ -774,7 +706,7 @@ class fetch_results(threading.Thread):
 
             
     def run(self):
-        logger.info(f"Queuing {len(self.mod.results)} downloads...")
+        logger.info(f'Queuing {len(self.mod.results)} downloads...')
         
         for _ in range(self.n_threads):
             t = threading.Thread(
@@ -816,7 +748,7 @@ def _fetch_worker(module, entry, verbose=True):
     try:
         return module.fetch_entry(entry, check_size=True, verbose=verbose)
     except Exception as e:
-        logger.error(f"Worker failed for {entry.get('url', 'unknown')}: {e}")
+        logger.error(f'Worker failed for {entry.get("url", "unknown")}: {e}')
         return -1
 
     
@@ -841,7 +773,7 @@ def run_fetchez(modules: List['FetchModule'], threads: int = 3):
         logger.info("No files to fetch.")
         return
 
-    logger.info(f"Starting parallel fetch: {total_files} files with {threads} threads.")
+    logger.info(f'Starting parallel fetch: {total_files} files with {threads} threads.')
 
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
@@ -882,7 +814,75 @@ def run_fetches(modules, threads=3):
             except Exception as e:
                 logger.error('fetch failed')            
 
+
+def inventory(modules: List['FetchModule'], region: Tuple[float, float, float, float], out_format: str = 'json') -> str:
+    """Run the specified module(s) to discover available data, but do NOT download.
+    Returns the inventory as a string (JSON/CSV).
+    
+    Args:
+        modules: List of instantiated FetchModule objects.
+        region: The bounding box (w, e, s, n).
+        out_format: 'json', 'csv', or 'geojson'.
+    """
+    
+    import json
+    import csv
+    from io import StringIO
+    
+    inventory_list = []
+
+    silent = logger.getEffectiveLevel() > logging.INFO
+    
+    with tqdm(total=len(modules), desc="Scanning Datasets", unit="mod", disable=not silent) as pbar:
+        for mod in modules:
+            try:
+                mod.region = region
+                mod.run()
+
+                for res in mod.results:
+                    item = {
+                        'module': mod.name,
+                        'title': res.get('title', 'Unknown'),
+                        'url': res.get('url'),
+                        'filename': res.get('dst_fn'),
+                        'date': res.get('date', ''),
+                        'size': res.get('size', '') # Some modules might populate this
+                    }
+                    inventory_list.append(item)
+                    
+            except Exception as e:
+                logger.error(f'Module {mod.name} failed during inventory: {e}')
+            
+            pbar.update(1)
+
+    if out_format == 'json':
+        return json.dumps(inventory_list, indent=2)
         
+    elif out_format == 'csv':
+        output = StringIO()
+        if inventory_list:
+            keys = inventory_list[0].keys()
+            dict_writer = csv.DictWriter(output, keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(inventory_list)
+        return output.getvalue()
+
+    elif out_format == 'geojson':
+        features = []
+        for item in inventory_list:
+            # maybe have modules attach 'geom' to results
+            feat = {
+                'type': 'Feature',
+                'properties': item,
+                'geometry': None 
+            }
+            features.append(feat)
+            
+        return json.dumps({'type': 'FeatureCollection', 'features': features}, indent=2)
+
+    return ""
+
+                
 # =============================================================================
 # Fetch Module (Base & Default/Test Implementations)
 #
@@ -996,17 +996,20 @@ class FetchModule:
         
 # Simple Fetch Module to fetch a url.
 # It will just add that url to `results`.
+@cli.cli_opts(
+    help_text='Fetch a url'
+    url='URL to fetch'
+)
 class HttpDataset(FetchModule):
     """Fetch an http file directly."""
     
-    def __init__(self, **kwargs):
+    def __init__(self, url, **kwargs):
         super().__init__(**kwargs)
+        self.url = url
 
         
-    def run(self):
-        if 'mod' in self.params:
-            self.add_entry_to_results(
-                self.params['mod'],
-                os.path.basename(self.params['mod']),
-                'https'
-            )
+        self.add_entry_to_results(
+            self.url,
+            os.path.basename(self.url),
+            'https'
+        )
