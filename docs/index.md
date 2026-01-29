@@ -105,40 +105,6 @@ Your plugin instantly gains all of Fetchez's powers: smart region parsing, multi
 
 See the [Contribution Guide](https://github.com/ciresdem/fetchez/blob/main/CONTRIBUTING.md) for a full code example.
 
-## 🤝  Contribute new Fetchez Modules!
-
-The power of Fetchez lies in its registry. The more modules we have, the more powerful the tool becomes for the entire geospatial community.
-
-**Do you have a favorite public dataset?** Don't keep the script to yourself; turn it into a Fetchez module!
-
-### How to Contribute
-
-Adding a module is easy:
-
-1. Create a Class: Inherit from fetchez.core.FetchModule.
-
-2. Implement run(): Define how to translate user input into URLs suitable to download.
-
-3. Register It: Add your modules metadata (Agency, Resolution, License) to registry.py.
-
-We have a comprehensive guide to help you get started:
-
-Read the [Contribution Guide](https://github.com/ciresdem/fetchez/blob/main/CONTRIBUTING.md)
-
-
-## 🔱  Disclaimer on Data Persistence
-
-We provide the tools to locate and download data from authoritative public repositories, but we do not host the data ourselves.
-
-Government agencies reorganize websites, migrate APIs (e.g., WCS 1.0 to 2.0), or decommission servers without notice. A module that fetches perfectly today may encounter a 404 tomorrow.
-
-Source datasets are frequently updated, reprocessed, or removed by their custodians. The "best available" data for a region can change overnight.
-
-Remote servers (like NOAA NCEI, USGS, or Copernicus) may experience downtime, throttling, or rate limits that are entirely outside our control.
-
-We strive to keep our modules robust and our index fresh. If you encounter a broken fetch or a changed endpoint, please open an issue. This helps the whole community keep up with the changes!
-
-
 ### 📄  License
 
 Fetchez is open-source software licensed under the MIT License.
