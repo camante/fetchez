@@ -193,7 +193,7 @@ Fetchez supports over 50 modules categorized by data type. Run ```fetchez --modu
 | Reference | osm (OpenStreetMap), vdatum |
 | Generic | http (Direct URL), earthdata (NASA) |
 
-### 🛟️ Module-Specific Dependencies
+## 🛟️ Module-Specific Dependencies
 
 While the core `fetchez` engine is lightweight, some specialized data modules may require extra Python libraries to function (e.g., `pyshp` for TIGER data, `boto3` for AWS-based sources, or `gdal` for complex vector operations).
 
