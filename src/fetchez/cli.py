@@ -352,19 +352,32 @@ def fetchez_cli():
             print(f"  {name:<15} : {desc}")
         sys.exit(0)
 
-    # Init Global Hooks
+    # --- Init Global Hooks ---
     global_hook_objs = []
     if hasattr(global_args, 'hook') and global_args.hook:
         global_hook_objs = init_hooks(global_args.hook)
 
-    # Handle System Flags (Legacy support mapping to new Class system)
-    # If user types --pipe-path, we map it to the 'pipe' hook class
+    # We want dry run to stop downloading (for list)
+    add_dry_run = False
+
+    if global_args.list:
+        from .hooks.basic import ListEntries
+        global_hook_objs.append(ListEntries())
+        add_dry_run = True
+
+    if global_args.inventory:
+        from .hooks.basic import Inventory
+        global_hook_objs.append(Inventory(format='json'))
+        add_dry_run = True
+    
     if global_args.pipe_path:
-        PipeHook = HookRegistry.get_hook('pipe')
-        if PipeHook:
-            global_hook_objs.append(PipeHook())
-        # Silence logging for pipes
-        logging.getLogger('fetchez').setLevel(logging.ERROR)
+        from .hooks.basic import PipeOutput
+        global_hook_objs.append(PipeOutput())
+        #logging.getLogger('fetchez').setLevel(logging.ERROR)
+
+    if add_dry_run:
+        from .hooks.basic import DryRun
+        global_hook_objs.append(DryRun())
         
     module_keys = {}
     for key, val in registry.FetchezRegistry._modules.items():
@@ -444,25 +457,6 @@ def fetchez_cli():
         usable_modules.append((mod_cls, mod_kwargs))        
         
     for this_region in these_regions:
-        # Output the data inventory if requested.
-        # Update in the future to allow for different outputs, 'csv' or 'geojson'
-        # we will need to update core.inventory and module results to give us
-        # some kind of geometry...
-        if global_args.inventory:
-            modules = []
-            for mod_cls, mod_kwargs in usable_modules:
-                x_f = mod_cls(
-                    src_region=this_region,
-                    **mod_kwargs  
-                )
-                
-                if x_f is None: continue                
-                modules.append(x_f)
-
-            report = core.inventory(modules, this_region, out_format='csv')
-            print(report)
-            continue
-        
         for mod_cls, mod_kwargs in usable_modules:
             try:
                 #print(mod_kwargs)
@@ -484,39 +478,34 @@ def fetchez_cli():
                 if not x_f.results:
                     continue
 
-                if global_args.list:
-                    for result in x_f.results:
-                        print(result['url'])
-                else:
-                    try:
-                        # run_fetchez expects a list of modules, so we wrap x_f in brackets [x_f].
-                        # It handles the progress bar and threading internally.
-                        core.run_fetchez([x_f], threads=global_args.threads, hooks=all_hooks)
+                try:
+                    # run_fetchez expects a list of modules, so we wrap x_f in brackets [x_f].
+                    core.run_fetchez([x_f], threads=global_args.threads, hooks=all_hooks)
 
-                    except (KeyboardInterrupt, SystemExit):
-                        logger.error('User breakage... please wait while fetchez exits.')
-                        # No need to manually drain queues anymore; Python's executor handles cleanup.
-                        sys.exit(0)
-                    # depreciated threads/queue
-                    # try:
-                    #     fr = core.fetch_results(
-                    #         x_f,
-                    #         n_threads=global_args.threads,
-                    #         check_size=check_size,
-                    #         attempts=global_args.attempts
-                    #     )
-                    #     fr.daemon = True                
-                    #     fr.start()
-                    #     fr.join()         
-                    # except (KeyboardInterrupt, SystemExit):
-                    #     logger.error('User breakage... please wait while fetchez exits.')
-                    #     x_f.status = -1
-                    #     while not fr.fetch_q.empty():
-                    #         try:
-                    #             fr.fetch_q.get(False)
-                    #             fr.fetch_q.task_done()
-                    #         except queue.Empty:
-                    #             break
+                except (KeyboardInterrupt, SystemExit):
+                    logger.error('User breakage... please wait while fetchez exits.')
+                    # No need to manually drain queues anymore; Python's executor handles cleanup.
+                    sys.exit(0)
+                # Depreciated threads/queue:
+                # try:
+                #     fr = core.fetch_results(
+                #         x_f,
+                #         n_threads=global_args.threads,
+                #         check_size=check_size,
+                #         attempts=global_args.attempts
+                #     )
+                #     fr.daemon = True                
+                #     fr.start()
+                #     fr.join()         
+                # except (KeyboardInterrupt, SystemExit):
+                #     logger.error('User breakage... please wait while fetchez exits.')
+                #     x_f.status = -1
+                #     while not fr.fetch_q.empty():
+                #         try:
+                #             fr.fetch_q.get(False)
+                #             fr.fetch_q.task_done()
+                #         except queue.Empty:
+                #             break
 
             except (KeyboardInterrupt, SystemExit):
                 logger.error('User interruption.')

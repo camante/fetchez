@@ -809,19 +809,24 @@ def run_fetchez(modules: List['FetchModule'], threads: int = 3, hooks=None):
     all_entries = [] # entries pre-fetch
     for mod in modules:
         for entry in mod.results:
-            all_entries.append((mod, entry))
-            
-    total_files = len(all_entries)
-    if total_files == 0:
-        logger.info('No files to fetch.')
-        return
+            all_entries.append((mod, entry))            
 
     for hook in pre_hooks:
         try:
-            hook.run(all_entries)
+            result = hook.run(all_entries)
+            # If hook returns a list, update our working set
+            # This allows hooks to filter items or empty the list (Dry Run)
+            if isinstance(result, list):
+                all_entries = result
+                
         except Exception as e:
             logger.error(f'Pre-fetch hook "{hook.name}" failed: {e}')
-    
+
+    total_files = len(all_entries)
+    if total_files == 0:
+        logger.info('No files to fetch (queue empty).')
+        return
+            
     logger.info(f'Starting parallel fetch: {total_files} files with {threads} threads.')
 
     all_results = [] # entries post-fetch
@@ -879,89 +884,7 @@ def run_fetchez(modules: List['FetchModule'], threads: int = 3, hooks=None):
         tqdm.write('\n🛑 Stopping downloads... (waiting for workers to exit)')
         executor.shutdown(wait=False, cancel_futures=True)
        
-        raise
-
-                
-def run_fetches(modules, threads=3):    
-    with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
-        # Submit all download tasks
-        futures = {executor.submit(mod.fetch_file, entry): entry for mod in modules for entry in mod.results}
-        
-        for future in concurrent.futures.as_completed(futures):
-            entry = futures[future]
-            try:
-                status = future.result()
-            except Exception as e:
-                logger.error('fetch failed')            
-
-
-def inventory(modules: List['FetchModule'], region: Tuple[float, float, float, float], out_format: str = 'json') -> str:
-    """Run the specified module(s) to discover available data, but do NOT download.
-    Returns the inventory as a string (JSON/CSV).
-    
-    Args:
-        modules: List of instantiated FetchModule objects.
-        region: The bounding box (w, e, s, n).
-        out_format: 'json', 'csv', or 'geojson'.
-    """
-    
-    import json
-    import csv
-    from io import StringIO
-    
-    inventory_list = []
-
-    silent = logger.getEffectiveLevel() > logging.INFO
-    
-    with tqdm(total=len(modules), desc="Scanning Datasets", unit="mod", disable=not silent) as pbar:
-        for mod in modules:
-            try:
-                mod.region = region
-                mod.run()
-
-                for res in mod.results:
-                    item = {
-                        'module': mod.name,
-                        'title': res.get('title', 'Unknown'),
-                        'url': res.get('url'),
-                        'filename': res.get('dst_fn'),
-                        'date': res.get('date', ''),
-                        'size': res.get('size', '') # Some modules might populate this
-                    }
-                    inventory_list.append(item)
-                    
-            except Exception as e:
-                logger.error(f'Module {mod.name} failed during inventory: {e}')
-            
-            pbar.update(1)
-
-    if out_format == 'json':
-        return json.dumps(inventory_list, indent=2)
-        
-    elif out_format == 'csv':
-        output = StringIO()
-        if inventory_list:
-            keys = inventory_list[0].keys()
-            dict_writer = csv.DictWriter(output, keys)
-            dict_writer.writeheader()
-            dict_writer.writerows(inventory_list)
-        return output.getvalue()
-
-    elif out_format == 'geojson':
-        features = []
-        for item in inventory_list:
-            # maybe have modules attach 'geom' to results
-            feat = {
-                'type': 'Feature',
-                'properties': item,
-                'geometry': None 
-            }
-            features.append(feat)
-            
-        return json.dumps({'type': 'FeatureCollection', 'features': features}, indent=2)
-
-    return ""
-
+        raise                
                 
 # =============================================================================
 # Fetch Module (Base & Default/Test Implementations)
