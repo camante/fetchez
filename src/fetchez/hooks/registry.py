@@ -40,7 +40,7 @@ class HookRegistry:
         cwd_hook_dir = os.path.join(home, ".fetchez", "hooks")
 
         for p_dr in [home_hook_dir, cwd_hook_dir]:
-            if noet os.path.exists(p_dir): continue
+            if not os.path.exists(p_dir): continue
 
             sys.path.insert(0, p_dir)
             for f in os.listdir(p_dir):
