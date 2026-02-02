@@ -76,23 +76,31 @@ def setup_logging(verbose=False):
 # Mostly based on cudem.factory
 # =============================================================================
 def parse_fmod_argparse(arg_str):
-    """Parse 'module:key=val:key2=val2' strings."""
+    """Parse 'module:key=val,key2=val2' strings into argparse-ready flags.
     
-    parts = arg_str.split(':')
-    mod_name = parts[0]
+    Input:  'srtm_plus:year=2020,verbose'
+    Output: (None, 'srtm_plus', ['--year=2020', '--verbose'])
+    """
+    
+    if ':' in arg_str:
+        mod_name, rest = arg_str.split(':', 1)
+        parts = rest.split(',')
+    else:
+        mod_name = arg_str
+        parts = []
+
     args = []
     
-    # If the string was just "module", parts is length 1
-    # If "module:arg=1", parts is length 2+
-    if len(parts) > 1:
-        for p in parts[1:]:
-            # Convert 'key=val' to '--key=val' for argparse consumption
-            if '=' in p:
-                k, v = p.split('=')
-                args.append(f"--{k}={v}")
-            else:
-                # Handle boolean flags if passed as just ':flag'
-                args.append(f"--{p}")
+    for p in parts:
+        if not p.strip(): continue
+        
+        # Convert 'key=val' to '--key=val' for argparse
+        if '=' in p:
+            k, v = p.split('=', 1)
+            args.append(f"--{k}={v}")
+        else:
+            # Handle boolean flags passed without value (e.g. ,verbose)
+            args.append(f"--{p}")
                 
     return None, mod_name, args
 
@@ -228,14 +236,23 @@ def print_module_info(mod_key):
 
 def parse_hook_arg(arg_str):
     """Parse a hook string into (name, kwargs).
-    Example: 'unzip:overwrite=true:verbose=1' -> ('unzip', {'overwrite': True, 'verbose': 1})
+    
+    Syntax: 'name:key=val,key2=val2'
+    Example: 'reproject:crs=EPSG:3857,verbose=true'
     """
     
-    parts = arg_str.split(':')
-    name = parts[0]
+    if ':' in arg_str:
+        name, rest = arg_str.split(':', 1)
+        parts = rest.split(',')
+    else:
+        name = arg_str
+        parts = []
+
     kwargs = {}
     
-    for p in parts[1:]:
+    for p in parts:
+        if not p.strip(): continue
+        
         if '=' in p:
             k, v = p.split('=', 1)
             
@@ -252,8 +269,9 @@ def parse_hook_arg(arg_str):
                     else:
                         kwargs[k] = int(v)
                 except ValueError:
-                    kwargs[k] = v                    
+                    kwargs[k] = v
         else:
+            # Boolean flag
             kwargs[p] = True
 
     return name, kwargs
