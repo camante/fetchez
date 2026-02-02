@@ -405,12 +405,13 @@ CUDEM home page: <http://cudem.colorado.edu>
     if global_args.inventory:
         from .hooks.basic import Inventory
         global_hook_objs.append(Inventory(format='json'))
-        add_dry_run = True
+        add_dry_run = False
     
     if global_args.pipe_path:
         from .hooks.basic import PipeOutput
         global_hook_objs.append(PipeOutput())
         #logging.getLogger('fetchez').setLevel(logging.ERROR)
+        add_dry_run = False
 
     if add_dry_run:
         from .hooks.basic import DryRun
