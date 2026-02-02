@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+fetchez.hooks.utils
+~~~~~~~~~~~~~
+
+This holds the utiltiy fetchez hooks. These are default
+standard hooks.
+
+:copyright: (c) 2010-2026 Regents of the University of Colorado
+:license: MIT, see LICENSE for more details.
+"""
+
 import os
 import zipfile
 import logging
