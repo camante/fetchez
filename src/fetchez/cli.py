@@ -430,7 +430,8 @@ CUDEM home page: <http://cudem.colorado.edu>
     if add_dry_run:
         from .hooks.basic import DryRun
         global_hook_objs.append(DryRun())
-        
+
+    # --- Parse out modules/commands ---
     module_keys = {}
     for key, val in registry.FetchezRegistry._modules.items():
         module_keys[key] = key
@@ -440,7 +441,6 @@ CUDEM home page: <http://cudem.colorado.edu>
     commands = []
     current_cmd = None
     current_args = []
-
     for arg in remaining_argv:
         is_module = (arg in module_keys) or (arg.split(':')[0] in module_keys)
         
@@ -472,7 +472,8 @@ CUDEM home page: <http://cudem.colorado.edu>
 
     if global_args.buffer > 0:
         these_regions = [spatial.buffer_region(r, global_args.buffer) for r in these_regions]
-        
+
+    # --- Parse Module args ---
     usable_modules = []
     for mod_key, mod_argv in commands:
         
@@ -500,7 +501,8 @@ CUDEM home page: <http://cudem.colorado.edu>
             mod_kwargs['hook'] = []
 
         usable_modules.append((mod_cls, mod_kwargs))
-        
+
+    # --- Loop regions and mods and run ---
     for this_region in these_regions:
         for mod_cls, mod_kwargs in usable_modules:
             try:
