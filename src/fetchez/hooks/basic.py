@@ -19,6 +19,9 @@ import csv
 import re
 import logging
 import threading
+import hashlib
+import mimetypes
+from datetime import datetime
 from io import StringIO
 
 from . import FetchHook
@@ -63,6 +66,94 @@ class ListEntries(FetchHook):
             print(entry.get('url', ''))
         return entries
 
+
+class Checksum(FetchHook):
+    """Calculates file checksums immediately after download.
+
+    Adds '{algo}_hash' and 'local_size' to the result dictionary.
+
+    Usage: --hook checksum:algo=sha256
+    """
+
+    name = "checksum"
+    desc = "Calculate file checksums (md5/sha1/sha256)."
+    stage = 'file'
+
+    def __init__(self, algo='md5', **kwargs):
+        super().__init__(**kwargs)
+        self.algo = algo.lower()
+        if self.algo not in hashlib.algorithms_available:
+            logger.warning(f"Checksum algo '{self.algo}' not found. Defaulting to md5.")
+            self.algo = 'md5'
+
+            
+    def run(self, entries):
+        for entry in entries:
+            filepath = entry.get('dst_fn')
+            
+            if entry.get('status') != 0 or not os.path.exists(filepath):
+                entry[f'{self.algo}_hash'] = None
+                entry['local_size'] = 0
+                continue
+
+            try:
+                hasher = hashlib.new(self.algo)
+                size = 0
+                with open(filepath, 'rb') as f:
+                    for chunk in iter(lambda: f.read(65536), b""):
+                        hasher.update(chunk)
+                        size += len(chunk)
+                
+                entry[f'{self.algo}_hash'] = hasher.hexdigest()
+                entry['local_size'] = size
+                
+                remote_size = entry.get('remote_size')
+                if remote_size:
+                    try:
+                        if int(remote_size) != size:
+                            logger.warning(f"Size mismatch for {filepath}: {size} != {remote_size}")
+                            entry['verification'] = 'failed'
+                        else:
+                            entry['verification'] = 'passed'
+                    except ValueError:
+                        pass # remote_size might not be an int
+
+            except Exception as e:
+                logger.warning(f"Checksum failed for {filepath}: {e}")
+        
+        return entries
+
+
+class MetadataEnrich(FetchHook):
+    """Adds filesystem timestamps and mime-types to the result.
+
+    Usage: --hook enrich
+    """
+    
+    name = "enrich"
+    desc = "Add file timestamps and mime-types to metadata."
+    stage = 'file'
+
+    def run(self, entries):
+        for entry in entries:
+            filepath = entry.get('dst_fn')
+            
+            if entry.get('status') != 0 or not os.path.exists(filepath):
+                continue
+
+            try:
+                stat = os.stat(filepath)
+                entry['created_at'] = datetime.fromtimestamp(stat.st_ctime).isoformat()
+                entry['modified_at'] = datetime.fromtimestamp(stat.st_mtime).isoformat()
+                
+                mime, _ = mimetypes.guess_type(filepath)
+                entry['mime_type'] = mime or 'application/octet-stream'
+                
+            except Exception as e:
+                logger.warning(f"Metadata enrichment failed for {filepath}: {e}")
+                
+        return entries
+    
     
 class Inventory(FetchHook):
     name = 'pre_inventory'
@@ -127,8 +218,10 @@ class Audit(FetchHook):
                     json.dump(all_results, f, indent=2)
                     
                 elif self.format == 'csv':
-                    keys = all_results[0].keys()
-                    writer = csv.DictWriter(f, fieldnames=keys)
+                    keys = set().union(*(d.keys() for d in all_results))                    
+                    #keys = all_results[0].keys()
+                    #writer = csv.DictWriter(f, fieldnames=keys)
+                    writer = csv.DictWriter(f, fieldnames=sorted(list(keys)))
                     writer.writeheader()
                     writer.writerows(all_results)
                     

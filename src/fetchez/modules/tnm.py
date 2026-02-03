@@ -76,6 +76,7 @@ class TheNationalMap(core.FetchModule):
       2: DEM 1 meter
       3: NED 1/3 arc-second
       4: NED 1/9 arc-second
+      8: Original Product Resolution (OPR)
       11: Lidar Point Cloud (LPC)
     """
 
