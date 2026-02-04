@@ -302,61 +302,6 @@ def init_hooks(hook_list_strs):
             
     return active_instances
 
-
-def init_presets():
-    """Generate a default presets.json file."""
-    
-    from . import presets
-    
-    config_dir = os.path.dirname(presets.CONFIG_PATH)
-    config_file = presets.CONFIG_PATH
-    
-    if os.path.exists(config_file):
-        print(f'Config file already exists at: {config_file}')
-        return
-
-    if not os.path.exists(config_dir):
-        os.makedirs(config_dir, exist_ok=True)
-
-    default_config = {
-        "presets": {
-            "audit-full": {
-                "help": "Generate SHA256 hashes, enrichment, and a full JSON audit log.",
-                "hooks": [
-                    {"name": "checksum", "args": {"algo": "sha256"}},
-                    {"name": "enrich"},
-                    {"name": "audit", "args": {"file": "audit_full.json"}}
-                ]
-            },
-            "clean-download": {
-                "help": "Unzip files and remove the original archive.",
-                "hooks": [
-                    {"name": "unzip", "args": {"remove": 'true'}}
-                ]
-            },
-        },
-        "modules": {
-            "multibeam": {
-                "presets": {
-                    "inf_only": {
-                        "help": "multibeam Only: Fetch only inf files",
-                        "hooks": [
-                            {"name": "filename_filter", "args": {"match": ".inf", "stage": "pre"}},
-                        ]
-                    }
-                }
-            }
-        }
-    }
-
-    try:
-        with open(config_file, 'w') as f:
-            json.dump(default_config, f, indent=4)
-        logger.info(f'Created default configuration at: {config_file}')
-        logger.info('Edit this file to add your own workflow presets.')
-    except Exception as e:
-        logger.error(f'Could not create presets config: {e}')
-
         
 # =============================================================================
 # Command-line Interface(s) (CLI)
@@ -370,12 +315,14 @@ def fetchez_cli():
 
     from .hooks.registry import HookRegistry
     from . import presets
+    from . import config
     
     HookRegistry.load_builtins()  
     HookRegistry.load_user_plugins()
 
-    user_presets = presets.load_user_presets()
-    user_mod_presets = utils.load_user_config().get('modules', {})
+    #user_presets = presets.load_user_presets()
+    user_presets = config.load_user_config().get('presets', {})
+    user_mod_presets = config.load_user_config().get('modules', {})
 
     parser = argparse.ArgumentParser(
         description=f'{utils.CYAN}%(prog)s{utils.RESET} ({__version__}) :: Discover and Fetch remote geospatial data',
@@ -439,7 +386,7 @@ CUDEM home page: <http://cudem.colorado.edu>
     setup_logging(not global_args.quiet) # this prevents logging from distorting tqdm and leaving partial tqdm bars everywhere...
 
     if global_args.init_presets:
-        init_presets()
+        presets.init_presets()
         sys.exit(0)
     
     if global_args.info:
@@ -580,17 +527,7 @@ CUDEM home page: <http://cudem.colorado.edu>
             formatter_class=argparse.RawTextHelpFormatter
         )
         mod_parser.add_argument('--mod-hook', action='append', help=f'Add a hook for {mod_key} only.')
-        #mod_preset_grp = mod_parser.add_argument_group(f'{mod_cls.name} Presets')        
-
-        # # Load module specific presets
-        # if hasattr(mod_cls, 'presets'):
-        #     for pname, pdef in mod_cls.presets.items():
-        #         mod_preset_grp.add_argument(
-        #             f'--{pname}', 
-        #             action='store_true', 
-        #             help=f"Apply {mod_cls.name} preset: {pname}"
-        #         )
-                
+        
         active_presets = getattr(mod_cls, 'presets', {}).copy()
         if mod_key in user_mod_presets:
             user_mod_presets = user_mod_presets[mod_key].get('presets', {})

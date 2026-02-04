@@ -19,7 +19,6 @@ import logging
 import zipfile
 import shutil
 import tqdm
-import json
 
 logger = logging.getLogger(__name__)
 
@@ -39,23 +38,6 @@ RESET   = '\033[0m'
 BOLD      = '\033[1m'
 UNDERLINE = '\033[4m'
 REVERSE   = '\033[7m'
-
-home_dir = os.path.expanduser('~')
-CONFIG_PATH = os.path.join(home_dir, '.fetchez', 'presets.json')
-
-def load_user_config():
-    """Load the user's config file."""
-    
-    if not os.path.exists(CONFIG_PATH):
-        return {}
-        
-    try:
-        with open(CONFIG_PATH, 'r') as f:
-            data = json.load(f)
-            return data
-    except Exception as e:
-        logger.warning(f'Could not load config file: {e}') 
-        return {}
 
 # =============================================================================
 # Terminal Printing Helpers
