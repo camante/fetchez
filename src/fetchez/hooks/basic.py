@@ -258,6 +258,8 @@ class FilenameFilter(FetchHook):
 
         if stage:
             self.stage = stage.lower() if stage.lower() in ['pre', 'file', 'post'] else 'file'
+
+        logger.info(f'filename_filter is set to stage {self.stage}')
         
     def run(self, entries):
         # Input: List of file entries

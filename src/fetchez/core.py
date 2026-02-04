@@ -929,7 +929,8 @@ class FetchModule:
             name='fetches',
             min_year=None,
             max_year=None,
-            params={}
+            params={},
+            **kwargs,
     ):
         self.region = src_region
         self.callback = callback
@@ -949,7 +950,17 @@ class FetchModule:
 
         self.internal_hooks = []
         self.external_hooks = hook if hook else []
-            
+
+        presets = {} 
+        
+        # Example structure:
+        # presets = {
+        #    'lidar-clean': [
+        #        {'name': 'unzip'},
+        #        {'name': 'filter', 'args': {'match': '.laz'}}
+        #    ]
+        # }
+        
         # For dlim support, we can check these variables for
         # to do the proper processing. Set these to their correct
         # values in the sub-class.
