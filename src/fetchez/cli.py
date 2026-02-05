@@ -312,18 +312,20 @@ def fetchez_cli():
     _usage = f'%(prog)s [-R REGION] [OPTIONS] MODULE [MODULE-OPTS]...'
 
     registry.FetchezRegistry.load_user_plugins()
-
+    registry.FetchezRegistry.load_installed_plugins()
+    
     from .hooks.registry import HookRegistry
     from . import presets
     from . import config
     
     HookRegistry.load_builtins()  
     HookRegistry.load_user_plugins()
-
+    
     #user_presets = presets.load_user_presets()
-    user_presets = config.load_user_config().get('presets', {})
-    user_mod_presets = config.load_user_config().get('modules', {})
-
+    #user_presets = config.load_user_config().get('presets', {})
+    #user_mod_presets = config.load_user_config().get('modules', {})
+    user_presets = presets.get_global_presets()
+    
     parser = argparse.ArgumentParser(
         description=f'{utils.CYAN}%(prog)s{utils.RESET} ({__version__}) :: Discover and Fetch remote geospatial data',
         formatter_class=argparse.RawTextHelpFormatter,
@@ -384,7 +386,7 @@ CUDEM home page: <http://cudem.colorado.edu>
     # I like sending logging to stderr, and anyway we want this with --pipe-path
     #logging.basicConfig(level=level, format='[ %(levelname)s ] %(name)s: %(message)s', stream=sys.stderr)
     setup_logging(not global_args.quiet) # this prevents logging from distorting tqdm and leaving partial tqdm bars everywhere...
-
+    
     if global_args.init_presets:
         presets.init_presets()
         sys.exit(0)
