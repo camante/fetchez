@@ -3,15 +3,13 @@
 <pre>
 🐄🌍 [ F E T C H E Z ] 🌍🐄
 </pre>
-**The Generic Geospatial Data Acquisition and Registry Engine**
+**The Geospatial Logistics & ETL Platform**
 
 [![Version](https://img.shields.io/badge/version-0.3.4-blue.svg)](https://github.com/ciresdem/fetchez)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-yellow.svg)](https://www.python.org/)
 [![PyPI version](https://badge.fury.io/py/fetchez.svg)](https://badge.fury.io/py/fetchez)
 [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://cudem.zulip.org)
-
-**The Geospatial Logistics & ETL Platform**
 
 **Fetchez** is a lightweight, modular and highly extendable Python library and command-line tool designed to discover and retrieve geospatial data from a wide variety of public repositories. Originally part of the [CUDEM](https://github.com/ciresdem/cudem) project, Fetchez is now a standalone tool capable of retrieving Bathymetry, Topography, Imagery, and Oceanographic data (and more!) from sources like NOAA, USGS, NASA, and the European Space Agency.
 
