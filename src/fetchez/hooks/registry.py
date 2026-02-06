@@ -26,11 +26,10 @@ class HookRegistry:
     def load_builtins(cls):
         """Load hooks shipped with fetchez (e.g., fetchez.hooks.basic)."""
         
-        from . import basic, utils, multibeam_tools, cog
+        from . import basic, utils, multibeam_tools
         cls._register_from_module(basic)
         cls._register_from_module(utils)
         cls._register_from_module(multibeam_tools)
-        cls._register_from_module(cog)
 
         
     @classmethod
