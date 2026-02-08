@@ -252,7 +252,6 @@ class Region:
         tuple: (top_left_x, x_res, 0, top_left_y, 0, -y_res)
         """
     
-        min_x, min_y, max_x, max_y = region
         x_res = (self.xmax - self.xmin) / float(nx)
         y_res = (self.ymax - self.ymin) / float(ny)
         return (self.xmin, x_res, 0, self.ymax, 0, -y_res)
