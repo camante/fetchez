@@ -14,9 +14,10 @@ Execute Project workflows defined in JSON or YAML files.
 import os
 import json
 import logging
-from . import core
-from . import spatial
-from . import registry
+
+from .core import run_fetchez
+from .spatial import parse_region
+from .registry import FetchezRegistry
 from .hooks.registry import HookRegistry
 
 logger = logging.getLogger(__name__)
@@ -99,7 +100,7 @@ class ProjectRun:
 
         # Global Region
         global_region_def = self.config.get('region')
-        global_regions = spatial.parse_region(global_region_def) if global_region_def else [None]
+        global_regions = parse_region(global_region_def) if global_region_def else [None]
 
         # Build Module Instances
         modules_to_run = []
@@ -112,7 +113,7 @@ class ProjectRun:
             # Module Region overrides Global
             mod_region_def = mod_def.get('region')
             if mod_region_def:
-                mod_regions = spatial.parse_region(mod_region_def)
+                mod_regions = parse_region(mod_region_def)
             else:
                 mod_regions = global_regions
 
@@ -120,7 +121,7 @@ class ProjectRun:
                 logger.warning(f"Skipping module {mod_key}: No region defined.")
                 continue
 
-            ModCls = registry.FetchezRegistry.load_module(mod_key)
+            ModCls = FetchezRegistry.load_module(mod_key)
             if not ModCls:
                 logger.error(f"Unknown module: {mod_key}")
                 continue
@@ -146,4 +147,4 @@ class ProjectRun:
         for mod in modules_to_run:
             mod.run()
             
-        core.run_fetchez(modules_to_run, threads=threads, global_hooks=global_hooks)
+        run_fetchez(modules_to_run, threads=threads, global_hooks=global_hooks)
