@@ -308,7 +308,7 @@ Remote servers (like NOAA NCEI, USGS, or Copernicus) may experience downtime, th
 
 We strive to keep our modules robust and our index fresh. If you encounter a broken fetch or a changed endpoint, please open an issue. This helps the whole community keep up with the changes!
 
-## ⚖️License
+## ⚖ License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/ciresdem/fetchez/blob/main/LICENSE) file for details.
 
