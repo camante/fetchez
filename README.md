@@ -242,7 +242,7 @@ fetchez --init-presets
 fetchez charts --my-clean-workflow
 ```
 
-## 🗺️Supported Data Sources
+## 🗺 Supported Data Sources
 
 Fetchez supports over 50 modules categorized by data type. Run ```fetchez --modules``` to see the full list.
 
