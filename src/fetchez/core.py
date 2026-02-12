@@ -905,9 +905,7 @@ def run_fetchez(modules: List['FetchModule'], threads: int = 3, global_hooks=Non
     logger.info(f'Starting parallel fetch: {total_files} files with {threads} threads.')     
     final_results_with_owner = []
     
-    # We track active hooks to ensure we teardown everything that ran
-    active_hooks_set = []
-    
+    active_hooks_full = []
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
             futures = {
@@ -933,7 +931,7 @@ def run_fetchez(modules: List['FetchModule'], threads: int = 3, global_hooks=Non
                     lf_hooks = [h for h in mod.hooks if h.stage == 'file']
 
                     active_hooks = utils.merge_hooks(gf_hooks, lf_hooks)
-                    active_hooks_set.append(active_hooks)
+                    active_hooks_full.append(active_hooks)
 
                     current_entries = [(mod, original_entry)]
                     
@@ -969,7 +967,7 @@ def run_fetchez(modules: List['FetchModule'], threads: int = 3, global_hooks=Non
         # --- Teardown The Hook(s) ---
         logger.debug("Running teardown for all hooks...")
         
-        all_possible_hooks = active_hooks_set
+        all_possible_hooks = active_hooks_full
         for h in global_hooks: all_possible_hooks.append(h)
         for m in modules: 
             for h in m.hooks: all_possible_hooks.append(h)
