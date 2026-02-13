@@ -21,9 +21,15 @@ from fetchez.core import FetchModule
 
 logger = logging.getLogger(__name__)
 
+@cli.cli_opts(
+    help_text="NASA EarthAccess",
+    short_name="Dataset Short Name (e.g. ATL03, ATL08, MUR-JPL-L4-GLOB-v4.1)",
+    concept_id="Concept ID",
+    version="Dataset Version (e.g. 006)",
+    cloud_cover="(min/max) cloud cover"
+)
 class EarthAccess(FetchModule):
-    """
-    Fetch NASA Earth Data using the `earthaccess` library.
+    """Fetch NASA Earth Data using the `earthaccess` library.
     
     This module leverages the official NSIDC `earthaccess` library to search
     and download data. 
