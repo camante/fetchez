@@ -16,25 +16,23 @@ Data is organized in 2x2 degree GeoTIFF tiles.
 
 import os
 import logging
-from typing import Optional, List, Dict
 
 from fetchez import core
-from fetchez import utils
 from fetchez import fred
 from fetchez import cli
 
 logger = logging.getLogger(__name__)
 
-WSF_BASE_URL = 'https://download.geoservice.dlr.de/WSF2019/files/'
+WSF_BASE_URL = "https://download.geoservice.dlr.de/WSF2019/files/"
+
 
 # =============================================================================
 # WSF Module
 # =============================================================================
 @cli.cli_opts(
     help_text="World Settlement Footprint (WSF) 2019",
-    update="Force update of the local index (FRED)"
+    update="Force update of the local index (FRED)",
 )
-
 class WSF(core.FetchModule):
     """Fetch World Settlement Footprint (WSF) 2019 data.
 
@@ -43,16 +41,15 @@ class WSF(core.FetchModule):
     """
 
     def __init__(self, update: bool = False, **kwargs):
-        super().__init__(name='wsf', **kwargs)
+        super().__init__(name="wsf", **kwargs)
         self.force_update = update
 
         # Initialize FRED (Local Index)
-        self.fred = fred.FRED(name='wsf')
+        self.fred = fred.FRED(name="wsf")
 
         # Check if we need to populate/update the index
         if self.force_update or len(self.fred.features) == 0:
             self.update_index()
-
 
     def update_index(self):
         """Crawl the DLR directory and update the FRED index."""
@@ -76,15 +73,16 @@ class WSF(core.FetchModule):
 
         count = 0
         for row in rows:
-            filename = row.split('/')[-1]
-            sid = filename.replace('.tif', '')
+            filename = row.split("/")[-1]
+            sid = filename.replace(".tif", "")
 
             # Skip overview COGs if present
-            if 'cog' in sid.lower(): continue
+            if "cog" in sid.lower():
+                continue
 
             try:
                 # Parse spatial info from filename
-                parts = sid.split('_')
+                parts = sid.split("_")
                 # usually [WSF2019, v1, x, y]
                 # x and y are the lower-left corner
                 x = int(parts[-2])
@@ -97,20 +95,18 @@ class WSF(core.FetchModule):
                 # Create GeoJSON Polygon
                 geom = {
                     "type": "Polygon",
-                    "coordinates": [[
-                        [w, s], [e, s], [e, n], [w, n], [w, s]
-                    ]]
+                    "coordinates": [[[w, s], [e, s], [e, n], [w, n], [w, s]]],
                 }
 
                 self.fred.add_survey(
                     geom=geom,
                     Name=sid,
                     ID=sid,
-                    Agency='DLR',
+                    Agency="DLR",
                     DataLink=f"{WSF_BASE_URL}{filename}",
-                    DataType='WSF',
-                    Date='2019',
-                    Info='World Settlement Footprint 2019 (10m)'
+                    DataType="WSF",
+                    Date="2019",
+                    Info="World Settlement Footprint 2019 (10m)",
                 )
                 count += 1
 
@@ -135,17 +131,17 @@ class WSF(core.FetchModule):
             return
 
         for item in results:
-            url = item.get('DataLink')
-            name = item.get('Name')
+            url = item.get("DataLink")
+            name = item.get("Name")
 
             if url:
                 self.add_entry_to_results(
                     url=url,
                     dst_fn=os.path.basename(url),
-                    data_type='wsf_tif',
-                    agency='DLR',
+                    data_type="wsf_tif",
+                    agency="DLR",
                     title=name,
-                    license='CC-BY 4.0'
+                    license="CC-BY 4.0",
                 )
 
         return self
