@@ -67,8 +67,8 @@ class EarthAccess(FetchModule):
             if not auth.authenticated:
                 logger.warning("EarthAccess: Not authenticated. Public data only, or prompt incoming.")
                 earthaccess.login(strategy="interactive") 
-        except Exception as e:
-            logger.warning(f"EarthAccess Login Warning: {e}")
+        except Exception as exception:
+            logger.warning(f"EarthAccess Login Warning: {exception}")
 
         bbox = None
         if self.region:
