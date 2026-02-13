@@ -18,6 +18,7 @@ import datetime
 import urllib.parse
 import posixpath
 from fetchez.core import FetchModule
+from fetchez import cli
 
 logger = logging.getLogger(__name__)
 
