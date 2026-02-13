@@ -16,7 +16,7 @@ import sys
 import logging
 import argparse
 import inspect
-from typing import Dict
+from typing import Dict, Optional, Any
 
 from . import utils
 from . import registry
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 # CLI Decorator and Decorations and logging
 # =============================================================================
-def cli_opts(help_text: str = None, **arg_help):
+def cli_opts(help_text: Optional[str] = None, **arg_help):
     """Decorator to attach CLI help text to FetchModule classes.
 
     Args:
@@ -176,7 +176,7 @@ def get_module_cli_desc(m: Dict) -> str:
         "Reference",
         "Generic",
     ]
-    grouped_modules = {}
+    grouped_modules: Dict[Any, Any] = {}
 
     for key, val in m.items():
         cat = val.get("category", "Generic")

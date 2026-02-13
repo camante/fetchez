@@ -98,7 +98,7 @@ def urlencode(opts: Dict, doseq: bool = True) -> str:
 def xml2py(node) -> Optional[Dict]:
     """Parse an xml file into a python dictionary."""
 
-    texts = {}
+    texts: Dict[Any, Any] = {}
     if node is None:
         return None
 
@@ -390,7 +390,7 @@ class Fetch:
 
     def __init__(
         self,
-        url: str = None,
+        url: Optional[str] = None,
         callback=fetches_callback,
         headers: Dict = R_HEADERS,
         verify: bool = True,
@@ -1023,7 +1023,7 @@ def run_fetchez(modules: List["FetchModule"], threads: int = 3, global_hooks=Non
                     logger.error(f"Teardown failed for hook '{hook.name}': {e}")
 
     # --- Post Hooks ---
-    results_by_mod = {m: [] for m in modules}
+    results_by_mod: Dict[Any, Any] = {m: [] for m in modules}
     for r_tuple in final_results_with_owner:
         owner_mod, entry = r_tuple
         if owner_mod in results_by_mod:
