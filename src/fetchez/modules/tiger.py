@@ -81,18 +81,18 @@ class Tiger(core.FetchModule):
 
             clean_name = layer_name.lower().strip()
 
-            for l in layers:
-                if l["name"].lower().strip() == clean_name:
-                    return l["id"]
+            for layer in layers:
+                if layer["name"].lower().strip() == clean_name:
+                    return layer["id"]
 
-            for l in layers:
-                if clean_name in l["name"].lower():
+            for layer in layers:
+                if clean_name in layer["name"].lower():
                     logger.info(
-                        f"Matched layer '{layer_name}' to '{l['name']}' (ID: {l['id']})"
+                        f"Matched layer '{layer_name}' to '{layer['name']}' (ID: {layer['id']})"
                     )
-                    return l["id"]
+                    return layer["id"]
 
-            avail = [l["name"] for l in layers[:10]]  # Show first 10
+            avail = [layer["name"] for layer in layers[:10]]  # Show first 10
             logger.error(
                 f"Layer '{layer_name}' not found. Available examples: {avail}..."
             )
